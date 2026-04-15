@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freistellung Express</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--blue:#1B3A6B;--blue-lt:#2452A0;--blue-bg:#EEF3FB;--blue-br:#C3D4EE;--text:#111827;--muted:#6B7280;--subtle:#9CA3AF;--border:#E5E7EB;--bg:#F9FAFB;--white:#FFFFFF;--red:#DC2626;--max:1080px}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 40px}
+    nav{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border)}
+    .nav-inner{max-width:var(--max);margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;align-items:center;height:64px}
+    .logo{text-decoration:none;display:flex;align-items:center}
+    .logo img{height:210px;width:auto;display:block}
+    .nav-links{display:flex;gap:28px;align-items:center}
+    .nav-links a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .15s}
+    .nav-links a:hover{color:var(--text)}
+.nav-cta{
+  font-size:13px;
+  font-weight:600;
+  background:var(--blue);
+  color:#fff !important;
+  padding:9px 20px;
+  border-radius:6px;
+  border:1.5px solid var(--blue);
+  cursor:pointer;
+  text-decoration:none;
+  transition:background .15s,color .15s,border-color .15s
+}    .nav-cta:hover{background:var(--blue-lt)}
+    .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+    .nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px}
+    .mobile-menu{display:none;position:fixed;inset:0;background:var(--white);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{font-size:20px;font-weight:500;color:var(--text);text-decoration:none}
+    .mobile-close{position:absolute;top:20px;right:20px;background:none;border:none;font-size:28px;cursor:pointer}
+    .hero-wrap{background:var(--blue);padding:80px 0 72px}
+    .hero-inner{max-width:var(--max);margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 380px;gap:60px;align-items:center}
+    .hero-kicker{display:inline-block;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 11px;border-radius:4px;margin-bottom:22px}
+    h1{font-size:clamp(36px,4.5vw,54px);font-weight:700;line-height:1.1;letter-spacing:-1px;color:var(--white);margin-bottom:18px}
+    h1 span{color:#93C5FD}
+    .hero-sub{font-size:16px;font-weight:300;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:10px}
+    .hero-warning{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:13px;padding:9px 14px;border-radius:6px;margin-bottom:32px}
+    .hero-warning b{color:#FCA5A5;font-weight:600}
+    .btn-main{display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;background:var(--white);color:var(--blue);padding:14px 26px;border-radius:6px;border:none;cursor:pointer;text-decoration:none;transition:background .15s}
+    .btn-main:hover{background:#EEF3FB}
+    .hero-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:26px}
+    .hero-card-label{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px}
+    .hero-stat{display:flex;align-items:center;gap:13px;padding:12px 14px;background:rgba(255,255,255,.06);border-radius:7px;border:1px solid rgba(255,255,255,.08);margin-bottom:8px}
+    .hero-stat:last-of-type{margin-bottom:0}
+    .hero-stat-num{font-size:20px;font-weight:700;color:var(--white);min-width:58px}
+    .hero-stat-label{font-size:11px;color:rgba(255,255,255,.45);line-height:1.45}
+    .hero-card-alert{margin-top:12px;padding:11px 13px;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.25);border-radius:7px;font-size:12px;color:#FCA5A5;line-height:1.6}
+    .proof-bar{background:var(--bg);border-bottom:1px solid var(--border);padding:13px 0}
+    .proof-inner{max-width:var(--max);margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .proof-item{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;color:var(--muted)}
+    .proof-check{width:17px;height:17px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .proof-check svg{width:9px;height:9px;color:white}
+    .proof-sep{width:1px;height:14px;background:var(--border)}
+    section{padding:80px 0;border-bottom:1px solid var(--border)}
+    section.alt{background:var(--bg)}
+    .sec-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+    .sec-title{font-size:clamp(24px,3vw,34px);font-weight:700;color:var(--text);line-height:1.2;letter-spacing:-.5px;margin-bottom:10px}
+    .sec-desc{font-size:15px;color:var(--muted);line-height:1.7;max-width:500px;margin-bottom:44px}
+    .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .svc{background:var(--white);padding:28px;transition:background .15s;position:relative}
+    .svc:hover{background:var(--bg)}
+    .svc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+    .svc-price{font-size:30px;font-weight:700;color:var(--blue);letter-spacing:-1px}
+    .svc-price span{font-size:15px;font-weight:400;color:var(--subtle)}
+    .svc-badge{background:var(--blue);color:var(--white);font-size:10px;font-weight:600;padding:3px 10px;border-radius:4px;white-space:nowrap;margin-top:4px}
+    .svc-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px}
+    .svc-desc{font-size:13px;color:var(--muted);line-height:1.75}
+    .hiw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+    .hiw-num{width:40px;height:40px;background:var(--blue-bg);border:1.5px solid var(--blue-br);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--blue);margin-bottom:18px}
+    .hiw-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px}
+    .hiw-desc{font-size:13.5px;color:var(--muted);line-height:1.75}
+    .about-grid{display:grid;grid-template-columns:200px 1fr;gap:52px;align-items:start}
+    .about-photo{width:200px;aspect-ratio:3/4;background:var(--bg);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .about-photo img{width:100%;height:100%;object-fit:cover}
+    .about-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--subtle);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+    .about-placeholder svg{width:36px;height:36px}
+    .about-txt{font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:14px}
+    .about-name{font-size:20px;font-weight:700;color:var(--text);margin-top:20px}
+    .about-role{font-size:13px;color:var(--subtle);margin-top:3px}
+    .form-layout{display:grid;grid-template-columns:1fr 280px;gap:36px;align-items:start}
+    .form-block{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:26px;margin-bottom:14px}
+    .form-block-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--subtle);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .fg-group{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .fg{display:flex;flex-direction:column;gap:6px}
+    .fg.full{grid-column:1/-1}
+    .fg label{font-size:12px;font-weight:600;color:var(--text)}
+    .fg input,.fg select{font-family:'Inter',sans-serif;font-size:14px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:10px 13px;border-radius:7px;outline:none;transition:border-color .15s;appearance:none;-webkit-appearance:none}
+    .fg input:focus,.fg select:focus{border-color:var(--blue);background:var(--white)}
+    .fg input::placeholder{color:#D1D5DB}
+    .fg input.error,.fg select.error{border-color:var(--red)!important;background:#FEF2F2}
+    .err-msg{font-size:11px;color:var(--red);display:none}
+    .fg.has-error .err-msg{display:block}
+    .zakazka-block{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px;position:relative}
+    .remove-btn{position:absolute;top:10px;right:10px;background:none;border:none;font-size:16px;color:var(--subtle);cursor:pointer;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s}
+    .remove-btn:hover{background:#FEE2E2;color:var(--red)}
+    .add-more{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--muted);background:none;border:1.5px dashed var(--border);padding:9px 18px;border-radius:7px;cursor:pointer;margin-top:6px;transition:border-color .15s,color .15s}
+    .add-more:hover{border-color:var(--blue);color:var(--blue)}
+    .pokracovat-wrap{margin-top:20px}
+    .pokracovat-btn{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;background:var(--blue);color:var(--white);padding:15px 32px;border-radius:7px;border:none;cursor:pointer;width:100%;transition:background .15s}
+    .pokracovat-btn:hover{background:var(--blue-lt)}
+    .platba-sekce{display:none;margin-top:24px}
+    .platba-sekce.zobrazena{display:block}
+    .platba-header{padding:12px 16px;background:var(--blue);border-radius:7px;margin-bottom:18px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.8)}
+    .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+    .pc{border:1.5px solid var(--border);border-radius:10px;padding:20px;cursor:pointer;position:relative;transition:border-color .15s;user-select:none}
+    .pc:hover{border-color:var(--blue)}
+    .pc.sel{border-color:var(--blue);background:var(--blue-bg)}
+    .pc-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--blue);color:var(--white);font-size:9px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap}
+    .pc-radio{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--border);margin-bottom:12px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    .pc.sel .pc-radio{border-color:var(--blue);background:var(--blue)}
+    .pc.sel .pc-radio::after{content:'';width:5px;height:5px;background:white;border-radius:50%}
+    .pc-eur{font-size:28px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.5px}
+    .pc.sel .pc-eur{color:var(--blue)}
+    .pc-name{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:5px}
+    .pc-info{font-size:11.5px;color:var(--muted);line-height:1.65}
+    .rozdil-info{font-size:13px;color:var(--muted);line-height:1.8;padding:12px 16px;background:var(--blue-bg);border-radius:7px;border-left:3px solid var(--blue);margin-bottom:18px}
+    .rozdil-info strong{color:var(--text)}
+    .pay-row{display:flex;gap:10px;flex-wrap:wrap}
+    .pay-btn{font-family:'Inter',sans-serif;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:7px;border:none;cursor:pointer;transition:background .15s}
+    .pay-btn.primary{background:var(--blue);color:var(--white)}
+    .pay-btn.primary:hover{background:var(--blue-lt)}
+    .pay-btn.secondary{background:var(--bg);color:var(--muted);border:1.5px solid var(--border)}
+    .pay-btn.secondary:hover{border-color:var(--blue);color:var(--blue)}
+    .bankovni-box{display:none;margin-top:14px;padding:16px 18px;background:var(--blue-bg);border:1px solid var(--blue-br);border-radius:8px}
+    .bankovni-box p{font-size:13px;color:var(--muted);line-height:1.85}
+    .bankovni-box strong{color:var(--text);font-weight:600}
+    .success-banner{display:none;align-items:flex-start;gap:12px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:18px;margin-top:14px}
+    .success-banner.show{display:flex}
+    .success-banner svg{width:18px;height:18px;color:#16A34A;flex-shrink:0;margin-top:2px}
+    .success-banner p{font-size:13.5px;color:#166534;line-height:1.7}
+    .success-banner strong{font-weight:600}
+    .form-sidebar{position:sticky;top:80px}
+    .sidebar-box{background:var(--blue);border-radius:10px;padding:22px;margin-bottom:12px}
+    .sidebar-box-title{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px}
+    .sidebar-feat{display:flex;align-items:flex-start;gap:10px}
+    .sidebar-feat+.sidebar-feat{margin-top:13px}
+    .sidebar-check{width:18px;height:18px;background:rgba(255,255,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .sidebar-check svg{width:10px;height:10px;color:white}
+    .sidebar-feat-title{font-size:12.5px;font-weight:500;color:rgba(255,255,255,.85)}
+    .sidebar-feat-desc{font-size:11.5px;color:rgba(255,255,255,.38);margin-top:2px;line-height:1.5}
+    .sidebar-alert{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px}
+    .sidebar-alert-t{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px}
+    .sidebar-alert-d{font-size:12px;color:var(--muted);line-height:1.65}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px}
+    .contact-desc{font-size:15px;color:var(--muted);line-height:1.8;margin:12px 0 24px}
+    .contact-cards{display:flex;flex-direction:column;gap:10px}
+    .cc{display:flex;align-items:center;gap:14px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:16px 18px;text-decoration:none;transition:border-color .15s}
+    .cc:hover{border-color:var(--blue)}
+    .cc-icon{width:38px;height:38px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .cc-icon svg{width:17px;height:17px;color:white}
+    .cc-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--subtle);font-weight:600}
+    .cc-val{font-size:14px;color:var(--text);margin-top:2px;font-weight:500}
+    .faq-item{border-top:1px solid var(--border);padding:16px 0}
+    .faq-item:last-child{border-bottom:1px solid var(--border)}
+    .faq-q{font-size:14px;font-weight:600;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .faq-q svg{width:15px;height:15px;color:var(--subtle);flex-shrink:0;transition:transform .3s}
+    .faq-item.open .faq-q svg{transform:rotate(180deg)}
+    .faq-a{font-size:13.5px;color:var(--muted);line-height:1.8;max-height:0;overflow:hidden;transition:max-height .35s ease,padding-top .3s}
+    .faq-item.open .faq-a{max-height:200px;padding-top:10px}
+    footer{background:var(--blue);padding:32px 0}
+    .footer-inner{max-width:var(--max);margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+    .footer-logo{font-size:14px;font-weight:700;color:rgba(255,255,255,.55)}
+    .footer-copy{font-size:12px;color:rgba(255,255,255,.28);margin-top:3px}
+    .footer-links{display:flex;gap:20px}
+    .footer-links a{font-size:12px;color:rgba(255,255,255,.38);text-decoration:none;cursor:pointer;transition:color .15s}
+    .footer-links a:hover{color:rgba(255,255,255,.8)}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--white);border-radius:12px;max-width:580px;width:100%;max-height:85vh;overflow-y:auto;padding:40px;position:relative}
+    .modal-close-x{position:absolute;top:16px;right:16px;background:var(--bg);border:1px solid var(--border);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .modal-close-x svg{width:13px;height:13px}
+    .modal h2{font-size:22px;font-weight:700;margin-bottom:22px;color:var(--text)}
+    .modal h3{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin:18px 0 6px;color:var(--text)}
+    .modal p,.modal li{font-size:13px;color:var(--muted);line-height:1.8}
+    .modal ul{padding-left:18px;margin-top:4px}
+    .modal-footer{margin-top:24px;display:flex;justify-content:flex-end}
+    .modal-footer button{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;background:var(--blue);color:var(--white);padding:10px 22px;border-radius:7px;border:none;cursor:pointer}
+    @media(max-width:960px){.hero-inner{grid-template-columns:1fr}.hero-card{display:none}.form-layout{grid-template-columns:1fr}.form-sidebar{position:static}.contact-grid{grid-template-columns:1fr;gap:48px}}
+    @media(max-width:768px){.services-grid{grid-template-columns:1fr}.hiw-grid{grid-template-columns:1fr;gap:28px}.about-grid{grid-template-columns:1fr}.price-grid{grid-template-columns:1fr}.nav-links{display:none}.nav-hamburger{display:flex}}
+    @media(max-width:600px){.wrap,.nav-inner,.hero-inner,.proof-inner,.footer-inner{padding-left:20px;padding-right:20px}section{padding:60px 0}.hero-wrap{padding:60px 0}.fg-group{grid-template-columns:1fr}.fg.full{grid-column:1}.proof-sep{display:none}}
+  </style>
+</head>
+<body>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
+  <a href="#sluzby" onclick="closeMobileMenu()">Služby</a>
+  <a href="#jak-to-funguje" onclick="closeMobileMenu()">Jak to funguje</a>
+  <a href="#o-nas" onclick="closeMobileMenu()">O nás</a>
+  <a href="#kontakt" onclick="closeMobileMenu()">Kontakt</a>
+  <a href="#formular" onclick="closeMobileMenu()" style="background:var(--blue);color:var(--white);padding:12px 28px;border-radius:7px;font-weight:600;">Vyplnit formulář</a>
+</div>
+
+<nav>
+  <div class="nav-inner">
+<a href="#" class="logo"><img src="freist.png" alt="Freistellung Express"></a>    <div class="nav-links">
+      <a href="#sluzby">Služby</a>
+      <a href="#jak-to-funguje">Jak to funguje</a>
+      <a href="#o-nas">O nás</a>
+      <a href="#kontakt">Kontakt</a>
+      <a href="#formular" class="nav-cta">Vyplnit formulář &rarr;</a>
+    </div>
+    <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="hero-wrap">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-kicker">Freistellungsbescheinigung §48b EStG</div>
+      <h1>Vyřídíme Freistellung<br>za vás do <span>24 hodin</span></h1>
+      <p class="hero-sub">Bez papírování. Bez němčiny. Z telefonu.</p>
+      <div class="hero-warning">Bez Freistellung ti mohou strhnout až <b>15&nbsp;% z faktury</b> v Německu.</div>
+      <a href="#formular" class="btn-main">Vyplnit formulář &rarr;</a>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-label">Proč to řešit</div>
+      <div class="hero-stat"><div class="hero-stat-num">24&nbsp;h</div><div class="hero-stat-label">Průměrná doba<br>vyřízení žádosti</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">15&nbsp;%</div><div class="hero-stat-label">Úspora z každé<br>faktury v Německu</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">§48b</div><div class="hero-stat-label">EStG — zákonný<br>podklad žádosti</div></div>
+      <div class="hero-card-alert"><b>Bez Freistellung</b> musí německý odběratel strhnout 15&nbsp;% z každé vaší faktury a odvést je finančnímu úřadu.</div>
+    </div>
+  </div>
+</div>
+
+<div class="proof-bar">
+  <div class="proof-inner">
+    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Vyřízení do 24 hodin</div>
+    <div class="proof-sep"></div>
+    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Komunikace česky</div>
+    <div class="proof-sep"></div>
+    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Platba kartou nebo převodem</div>
+    <div class="proof-sep"></div>
+    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Zkušenost z praxe v Německu</div>
+  </div>
+</div>
+
+<section id="sluzby">
+  <div class="wrap">
+    <div class="sec-label">Služby</div>
+    <div class="sec-title">Co pro vás vyřídíme</div>
+    <p class="sec-desc">Postaráme se o veškerou administrativu — vy se soustředíte na práci.</p>
+    <div class="services-grid">
+      <div class="svc">
+        <div class="svc-top"><div class="svc-price">80 <span>€</span></div></div>
+        <div class="svc-name">Podání žádosti</div>
+        <div class="svc-desc">Připravíme a odešleme žádost na příslušný Finanzamt. V případě zamítnutí není v ceně opakované řešení.</div>
+      </div>
+      <div class="svc">
+        <div class="svc-top"><div class="svc-price">100 <span>€</span></div><div class="svc-badge">Nejoblíbenější</div></div>
+        <div class="svc-name">Kompletní vyřízení</div>
+        <div class="svc-desc">Připravíme a podáme žádost na Finanzamt. Veškerou komunikaci s úřadem řešíme za vás až do úplného schválení.</div>
+      </div>
+      <div class="svc">
+        <div class="svc-top"><div class="svc-price">120 <span>€</span></div></div>
+        <div class="svc-name">Komplet se Steuernummer</div>
+        <div class="svc-desc">Nemáte daňové číslo v Německu (Steuernummer)? Vyřídíme ho za vás jako součást balíčku.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="jak-to-funguje">
+  <div class="wrap">
+    <div class="sec-label">Jak to funguje</div>
+    <div class="sec-title">Tři kroky k vaší Freistellung</div>
+    <p class="sec-desc">Celý proces zvládnete z telefonu za pár minut.</p>
+    <div class="hiw-grid">
+      <div><div class="hiw-num">1</div><div class="hiw-title">Vyplníte formulář</div><div class="hiw-desc">Vyplníte jednoduchý formulář online. Nepotřebujete žádné německé dokumenty ani znalost němčiny.</div></div>
+      <div><div class="hiw-num">2</div><div class="hiw-title">Vyberete a zaplatíte</div><div class="hiw-desc">Zvolíte typ služby a zaplatíte kartou nebo bankovním převodem. Po přijetí platby okamžitě začínáme.</div></div>
+      <div><div class="hiw-num">3</div><div class="hiw-title">Dostanete dokument</div><div class="hiw-desc">Do 24 hodin podáme žádost na Finanzamt. Po schválení dostanete Freistellungsbescheinigung e-mailem.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="formular">
+  <div class="wrap">
+    <div class="sec-label">Formulář</div>
+    <div class="sec-title">Vyplňte své údaje</div>
+    <p class="sec-desc">Vyplňte formulář a my se postaráme o zbytek.</p>
+    <div class="form-layout">
+      <div>
+        <div class="form-block">
+          <div class="form-block-title">Základní údaje</div>
+          <div class="fg-group">
+            <div class="fg" id="fg-jmeno"><label>Jméno a příjmení *</label><input type="text" id="jmeno" placeholder="Jan Novák" autocomplete="name"><span class="err-msg">Zadejte jméno i příjmení</span></div>
+            <div class="fg" id="fg-narozeni"><label>Datum narození *</label><input type="text" id="narozeni" placeholder="01.01.1985"><span class="err-msg">Formát: DD.MM.RRRR</span></div>
+            <div class="fg" id="fg-statni"><label>Státní příslušnost *</label><input type="text" id="statni" placeholder="česká"><span class="err-msg">Vyplňte státní příslušnost</span></div>
+            <div class="fg" id="fg-telefon"><label>Telefon *</label><input type="tel" id="telefon" placeholder="+420 777 000 000" autocomplete="tel"><span class="err-msg">Zadejte platné telefonní číslo</span></div>
+            <div class="fg full" id="fg-email"><label>E-mail *</label><input type="email" id="email" placeholder="vas@email.cz" autocomplete="email"><span class="err-msg">Zadejte platný e-mail</span></div>
+          </div>
+        </div>
+        <div class="form-block">
+          <div class="form-block-title">Adresa bydliště</div>
+          <div class="fg-group">
+            <div class="fg" id="fg-ulice"><label>Ulice a číslo *</label><input type="text" id="ulice" placeholder="Novákova 1"><span class="err-msg">Vyplňte ulici a číslo</span></div>
+            <div class="fg" id="fg-mesto"><label>Město *</label><input type="text" id="mesto" placeholder="Praha"><span class="err-msg">Vyplňte město</span></div>
+            <div class="fg" id="fg-psc"><label>PSČ *</label><input type="text" id="psc" placeholder="110 00"><span class="err-msg">Vyplňte PSČ</span></div>
+            <div class="fg" id="fg-stat"><label>Stát *</label><input type="text" id="stat" placeholder="Česká republika"><span class="err-msg">Vyplňte stát</span></div>
+          </div>
+        </div>
+        <div class="form-block">
+          <div class="form-block-title">Podnikání</div>
+          <div class="fg-group">
+            <div class="fg" id="fg-firma"><label>Název firmy / OSVČ jméno *</label><input type="text" id="firma" placeholder="Jan Novák — stavební práce"><span class="err-msg">Vyplňte název firmy nebo jméno</span></div>
+            <div class="fg"><label>Typ podnikání *</label><select id="typ-podnikani"><option value="OSVČ">OSVČ</option><option value="s.r.o.">s.r.o.</option><option value="a.s.">a.s.</option></select></div>
+            <div class="fg full" id="fg-obor"><label>Obor *</label><input type="text" id="obor" placeholder="stavebnictví, montáž, instalace..."><span class="err-msg">Vyplňte obor podnikání</span></div>
+          </div>
+        </div>
+        <div class="form-block">
+          <div class="form-block-title">Daňové údaje</div>
+          <div class="fg-group">
+            <div class="fg"><label>DIČ (pokud máš)</label><input type="text" id="dic" placeholder="CZ1234567890"></div>
+            <div class="fg"><label>Steuernummer (pokud máš)</label><input type="text" id="steuernummer" placeholder="nechej prázdné pokud nemáš"></div>
+            <div class="fg"><label>Máš už Freistellung?</label><select id="ma-freistellung"><option value="Ne">Ne</option><option value="Ano">Ano</option></select></div>
+          </div>
+        </div>
+        <div class="form-block">
+          <div class="form-block-title">Práce v Německu</div>
+          <div class="fg-group">
+            <div class="fg" id="fg-od-kdy"><label>Od kdy pracuješ v Německu *</label><input type="text" id="od-kdy" placeholder="01.01.2024"><span class="err-msg">Vyplňte datum</span></div>
+            <div class="fg" id="fg-jak-dlouho"><label>Předpokládaná doba práce *</label><input type="text" id="jak-dlouho" placeholder="6 měsíců"><span class="err-msg">Vyplňte dobu práce</span></div>
+            <div class="fg full" id="fg-kde-pracuje"><label>Kde pracuješ (město / region) *</label><input type="text" id="kde-pracuje" placeholder="Berlin, Bayern, München..."><span class="err-msg">Vyplňte místo práce</span></div>
+          </div>
+        </div>
+        <div class="form-block">
+          <div class="form-block-title">Zakázky v Německu</div>
+          <div id="zakazky-container">
+            <div class="zakazka-block" id="zakazka-1">
+              <div class="fg-group">
+                <div class="fg"><label>Název firmy (odběratel)</label><input type="text" placeholder="Muster GmbH" class="zak-firma"></div>
+                <div class="fg"><label>Adresa firmy</label><input type="text" placeholder="Musterstraße 1, Berlin" class="zak-adresa"></div>
+                <div class="fg"><label>Místo stavby (pokud jiné)</label><input type="text" placeholder="pokud jiné než adresa firmy" class="zak-misto"></div>
+                <div class="fg"><label>Přibližná doba trvání</label><input type="text" placeholder="3 měsíce" class="zak-doba"></div>
+              </div>
+            </div>
+          </div>
+          <button class="add-more" type="button" onclick="pridatZakazku()">+ Přidat další zakázku</button>
+        </div>
+        <div class="pokracovat-wrap">
+          <button class="pokracovat-btn" type="button" onclick="pokracovatNaPlatbu()">Pokračovat k výběru služby &rarr;</button>
+        </div>
+        <div class="platba-sekce" id="platba">
+          <div class="platba-header">Krok 2 — Vyberte typ služby a zaplaťte</div>
+          <div class="price-grid">
+            <div class="pc sel" onclick="vyberSluzbu(this,'vyrizeni',100)"><div class="pc-badge">Doporučeno</div><div class="pc-radio"></div><div class="pc-eur">100 €</div><div class="pc-name">Kompletní vyřízení</div><div class="pc-info">Podání + komunikace s úřadem do úplného schválení.</div></div>
+            <div class="pc" onclick="vyberSluzbu(this,'podani',80)"><div class="pc-radio"></div><div class="pc-eur">80 €</div><div class="pc-name">Podání</div><div class="pc-info">Připravíme a odešleme žádost na Finanzamt.</div></div>
+            <div class="pc" onclick="vyberSluzbu(this,'steuernummer',120)"><div class="pc-radio"></div><div class="pc-eur">120 €</div><div class="pc-name">Komplet se Steuernummer</div><div class="pc-info">Vyřídíme Steuernummer i Freistellung za vás.</div></div>
+          </div>
+          <div class="rozdil-info"><strong>Kompletní vyřízení vs. Podání:</strong> Finanzamt může vyžadovat doplnění informací. Při kompletním vyřízení veškerou komunikaci řešíme za vás až do schválení.</div>
+          <div class="pay-row">
+            <button class="pay-btn primary" type="button" onclick="zpracovatPlatbu()">💳 Zaplatit kartou</button>
+            <button class="pay-btn secondary" type="button" onclick="zobrazBankovniPrevod()">🏦 Bankovní převod</button>
+          </div>
+          <div class="bankovni-box" id="bankovni-info">
+            <p style="font-weight:600;color:var(--text);margin-bottom:8px;">Platba bankovním převodem</p>
+            <p>Číslo účtu: <strong>DOPLŇTE ČÍSLO ÚČTU</strong><br>Variabilní symbol: pošleme e-mailem po odeslání formuláře<br>Po přijetí platby začínáme zpracovávat do 24 hodin.</p>
+          </div>
+          <div class="success-banner" id="success-msg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <p><strong>Formulář byl úspěšně odeslán!</strong><br>Do 24 hodin vás kontaktujeme na uvedený e-mail nebo telefon s dalšími kroky. Děkujeme za důvěru.</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-sidebar">
+        <div class="sidebar-box">
+          <div class="sidebar-box-title">Co dostanete</div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title">Podání do 24 hodin</div><div class="sidebar-feat-desc">Okamžitě po přijetí platby</div></div></div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title">Komunikace česky</div><div class="sidebar-feat-desc">Žádná němčina ani angličtina</div></div></div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title">Kompletní vyřízení</div><div class="sidebar-feat-desc">Komunikujeme s úřadem za vás</div></div></div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title">Dokument e-mailem</div><div class="sidebar-feat-desc">Po schválení dostanete Freistellung</div></div></div>
+        </div>
+        <div class="sidebar-alert">
+          <div class="sidebar-alert-t">⚠ Proč to řešit hned?</div>
+          <div class="sidebar-alert-d">Každá faktura bez Freistellung = 15&nbsp;% stržených. Při faktuře 10&nbsp;000&nbsp;€ přijdete o 1&nbsp;500&nbsp;€.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="o-nas">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-photo">
+        <!-- Vyměňte za: <img src="foto.jpg" alt="Miroslav Jaroš"> -->
+        <div class="about-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Foto</span>
+        </div>
+      </div>
+      <div>
+        <div class="sec-label">O nás</div>
+        <div class="sec-title">Člověk, který ví, jak na to</div>
+        <p class="about-txt">Sám pracuji v Německu a vím, jak složité může být řešit úřady, papíry a cizí jazyk. Když jsem poprvé řešil Freistellung, platil jsem více a čekal 4 měsíce. Proto jsem vytvořil tuto službu, která pomáhá lidem jako jsem já — pracujícím v Německu, kteří chtějí mít vše vyřešené jednoduše a bez stresu.</p>
+        <p class="about-txt">Pomáhám s administrativním podáním žádosti o Freistellung a dalšími potřebnými kroky, aby ses mohl soustředit na práci, ne na papírování. Komunikace je rychlá, lidská a bez zbytečných složitostí.</p>
+        <div class="about-name">Miroslav Jaroš</div>
+        <div class="about-role">Zakladatel · Freistellung Express · IČO 09814850</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="kontakt">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div>
+        <div class="sec-label">Kontakt</div>
+        <div class="sec-title">Máte otázku?</div>
+        <p class="contact-desc">Rádi odpovíme na veškeré dotazy ohledně Freistellung, daňového čísla nebo procesu podání. Odpovídáme zpravidla do hodiny.</p>
+        <div class="contact-cards">
+          <a href="mailto:mira.jaros7@seznam.cz" class="cc"><div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="cc-label">E-mail</div><div class="cc-val">mira.jaros7@seznam.cz</div></div></a>
+          <a href="https://wa.me/420777039240" class="cc" target="_blank" rel="noopener"><div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="cc-label">WhatsApp</div><div class="cc-val">+420 777 039 240</div></div></a>
+        </div>
+      </div>
+      <div>
+        <div style="margin-bottom:20px;"><div class="sec-label">Časté dotazy</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Co je Freistellungsbescheinigung?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Je to osvědčení od německého finančního úřadu (Finanzamt), které potvrzuje, že váš odběratel nemusí srážet 15 % z vašich faktur dle §48b EStG.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Kdo Freistellung potřebuje?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Každý, kdo fakturuje za stavební nebo montážní práce v Německu jako OSVČ nebo firma. Týká se to české i slovenské OSVČ pracující pro německé zákazníky.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Jak dlouho platí Freistellung?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Standardně 3 roky od data vydání.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Potřebuji Steuernummer?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Ano, německé daňové číslo (Steuernummer) je podmínkou pro vydání Freistellung. Pokud ho nemáte, nabízíme balíček včetně jeho vyřízení za 120 €.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-logo">Freistellung.express</div><div class="footer-copy">&copy; 2026 Miroslav Jaroš &middot; IČO 09814850</div></div>
+    <div class="footer-links"><a onclick="document.getElementById('modal-podminky').classList.add('open')">Obchodní podmínky</a><a href="mailto:mira.jaros7@seznam.cz">Kontakt</a></div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modal-podminky" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <button class="modal-close-x" onclick="document.getElementById('modal-podminky').classList.remove('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h2>Obchodní podmínky</h2>
+    <h3>1. Identifikace poskytovatele</h3><p>Miroslav Jaroš &middot; IČO: 09814850 &middot; Neuměřice 144, 273 26<br>E-mail: mira.jaros7@seznam.cz &middot; Tel: +420 777 039 240</p>
+    <h3>2. Předmět služby</h3><p>Poskytovatel nabízí administrativní pomoc s přípravou a podáním žádosti o Freistellungsbescheinigung nach §48b EStG. Poskytovatel není daňovým poradcem ani právníkem.</p>
+    <h3>3. Rozsah služby</h3><ul><li>zpracování údajů dodaných klientem</li><li>příprava žádosti a odeslání na Finanzamt</li><li>u varianty „Kompletní vyřízení": komunikace s úřadem do schválení</li></ul>
+    <h3>4. Povinnosti klienta</h3><p>Klient je povinen poskytnout pravdivé a úplné údaje. Za správnost zadaných informací nese odpovědnost klient.</p>
+    <h3>5. Ceny a platba</h3><ul><li>Kompletní vyřízení: 100 €</li><li>Podání: 80 €</li><li>Komplet se Steuernummer: 120 €</li></ul>
+    <h3>6. Reklamace</h3><p>Stížnosti řešíme individuálně do 5 pracovních dnů.</p>
+    <h3>7. Ochrana osobních údajů</h3><p>Osobní údaje jsou zpracovávány výhradně za účelem poskytnutí služby a nejsou předávány třetím stranám, s výjimkou příslušného německého Finanzamtu.</p>
+    <div class="modal-footer"><button onclick="document.getElementById('modal-podminky').classList.remove('open')">Zavřít</button></div>
+  </div>
+</div>
+
+<script>
+function openMobileMenu(){document.getElementById('mobileMenu').classList.add('open')}
+function closeMobileMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+function toggleFaq(el){el.closest('.faq-item').classList.toggle('open')}
+let vybranaSluzba='vyrizeni',vybranaCena=100,pocetZakazek=1,formularOdeslan=false;
+const povinna=[
+  {id:'jmeno',fg:'fg-jmeno',check:v=>v.trim().split(/\s+/).length>=2},
+  {id:'narozeni',fg:'fg-narozeni',check:v=>/^\d{1,2}\.\d{1,2}\.\d{4}$/.test(v.trim())},
+  {id:'statni',fg:'fg-statni',check:v=>v.trim().length>=2},
+  {id:'telefon',fg:'fg-telefon',check:v=>v.trim().replace(/[\s\-\+\(\)]/g,'').length>=9},
+  {id:'email',fg:'fg-email',check:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())},
+  {id:'ulice',fg:'fg-ulice',check:v=>v.trim().length>=3},
+  {id:'mesto',fg:'fg-mesto',check:v=>v.trim().length>=2},
+  {id:'psc',fg:'fg-psc',check:v=>v.trim().replace(/\s/g,'').length>=3},
+  {id:'stat',fg:'fg-stat',check:v=>v.trim().length>=2},
+  {id:'firma',fg:'fg-firma',check:v=>v.trim().length>=2},
+  {id:'obor',fg:'fg-obor',check:v=>v.trim().length>=2},
+  {id:'od-kdy',fg:'fg-od-kdy',check:v=>v.trim().length>=4},
+  {id:'jak-dlouho',fg:'fg-jak-dlouho',check:v=>v.trim().length>=1},
+  {id:'kde-pracuje',fg:'fg-kde-pracuje',check:v=>v.trim().length>=2},
+];
+function validovat(){
+  let ok=true;
+  povinna.forEach(p=>{
+    const input=document.getElementById(p.id),fg=document.getElementById(p.fg);
+    if(!p.check(input.value)){fg.classList.add('has-error');input.classList.add('error');ok=false;}
+    else{fg.classList.remove('has-error');input.classList.remove('error');}
+  });
+  if(!ok)document.querySelector('.fg.has-error input,.fg.has-error select')?.scrollIntoView({behavior:'smooth',block:'center'});
+  return ok;
+}
+povinna.forEach(p=>{
+  const el=document.getElementById(p.id);
+  if(!el)return;
+  el.addEventListener('input',function(){if(p.check(this.value)){this.classList.remove('error');document.getElementById(p.fg)?.classList.remove('has-error');}});
+});
+function pokracovatNaPlatbu(){
+  if(!validovat())return;
+  const platba=document.getElementById('platba');
+  platba.classList.add('zobrazena');
+  setTimeout(()=>platba.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+function vyberSluzbu(el,sluzba,cena){
+  document.querySelectorAll('.pc').forEach(p=>p.classList.remove('sel'));
+  el.classList.add('sel');vybranaSluzba=sluzba;vybranaCena=cena;
+}
+function pridatZakazku(){
+  pocetZakazek++;
+  const id='zakazka-'+pocetZakazek,div=document.createElement('div');
+  div.className='zakazka-block';div.id=id;
+  div.innerHTML=`<button class="remove-btn" type="button" onclick="odebratZakazku('${id}')">&#x00D7;</button><div class="fg-group"><div class="fg"><label>Název firmy (odběratel)</label><input type="text" placeholder="Muster GmbH" class="zak-firma"></div><div class="fg"><label>Adresa firmy</label><input type="text" placeholder="Musterstraße 1, Berlin" class="zak-adresa"></div><div class="fg"><label>Místo stavby</label><input type="text" placeholder="pokud jiné než adresa firmy" class="zak-misto"></div><div class="fg"><label>Doba trvání</label><input type="text" placeholder="3 měsíce" class="zak-doba"></div></div>`;
+  document.getElementById('zakazky-container').appendChild(div);
+}
+function odebratZakazku(id){const el=document.getElementById(id);if(el)el.remove();}
+function sebratData(){
+  const zakazky=[];
+  document.querySelectorAll('.zakazka-block').forEach(b=>{
+    const f=b.querySelector('.zak-firma')?.value||'',a=b.querySelector('.zak-adresa')?.value||'',m=b.querySelector('.zak-misto')?.value||'',d=b.querySelector('.zak-doba')?.value||'';
+    if(f||a)zakazky.push(`Firma: ${f} | Adresa: ${a} | Misto: ${m||'-'} | Doba: ${d||'-'}`);
+  });
+  const nazev=vybranaSluzba==='vyrizeni'?'Kompletni vyrizeni (100 EUR)':vybranaSluzba==='podani'?'Podani (80 EUR)':'Komplet se Steuernummer (120 EUR)';
+  return{'VYBRANA SLUZBA':nazev,'Jmeno':document.getElementById('jmeno').value,'Narozeni':document.getElementById('narozeni').value,'Statni':document.getElementById('statni').value,'Telefon':document.getElementById('telefon').value,'Email':document.getElementById('email').value,'Ulice':document.getElementById('ulice').value,'Mesto':document.getElementById('mesto').value,'PSC':document.getElementById('psc').value,'Stat':document.getElementById('stat').value,'Firma':document.getElementById('firma').value,'Typ podnikani':document.getElementById('typ-podnikani').value,'Obor':document.getElementById('obor').value,'DIC':document.getElementById('dic').value||'-','Steuernummer':document.getElementById('steuernummer').value||'-','Ma Freistellung':document.getElementById('ma-freistellung').value,'Pracuje v DE od':document.getElementById('od-kdy').value,'Delka prace':document.getElementById('jak-dlouho').value,'Misto prace':document.getElementById('kde-pracuje').value,'Zakazky':zakazky.join('\n')||'-'};
+}
+async function odeslatFormspree(){
+  if(formularOdeslan)return true;
+  const data=sebratData(),formData=new FormData();
+  Object.entries(data).forEach(([k,v])=>formData.append(k,v));
+  try{const res=await fetch('https://formspree.io/f/mgorenaj',{method:'POST',body:formData,headers:{'Accept':'application/json'}});if(res.ok){formularOdeslan=true;return true;}return false;}catch(e){return false;}
+}
+function zobrazBankovniPrevod(){
+  const info=document.getElementById('bankovni-info'),visible=info.style.display==='block';
+  info.style.display=visible?'none':'block';
+  if(!visible)odeslatFormspree().then(ok=>{if(ok)document.getElementById('success-msg').classList.add('show');});
+}
+function zpracovatPlatbu(){
+  const links={'vyrizeni':'https://buy.stripe.com/test_3cI7sL3XI5kf0rgdv74Ni02','podani':'https://buy.stripe.com/test_5kQeVd3XIbIDei68aN4Ni01','steuernummer':'https://buy.stripe.com/test_9B64gz9i25kfa1Q62F4Ni00'};
+  odeslatFormspree().then(ok=>{
+    if(ok)document.getElementById('success-msg').classList.add('show');
+    const link=links[vybranaSluzba];
+    if(link.includes('LINK_')){alert('Platba kartou bude brzy dostupná.\n\nMezitím nás kontaktujte:\nEmail: mira.jaros7@seznam.cz\nWhatsApp: +420 777 039 240');}
+    else{window.location.href=link;}
+  });
+}
+</script>
+</body>
+</html>
