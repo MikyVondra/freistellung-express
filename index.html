@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Freistellung Express</title>
+  <link rel="icon" type="image/png" href="favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -11,31 +12,47 @@
     html{scroll-behavior:smooth}
     body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
     .wrap{max-width:var(--max);margin:0 auto;padding:0 40px}
-    nav{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border)}
+    nav{position:sticky;top:0;z-index:1000;background:var(--white);border-bottom:1px solid var(--border)}
     .nav-inner{max-width:var(--max);margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;align-items:center;height:64px}
     .logo{text-decoration:none;display:flex;align-items:center}
     .logo img{height:210px;width:auto;display:block}
     .nav-links{display:flex;gap:28px;align-items:center}
     .nav-links a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .15s}
     .nav-links a:hover{color:var(--text)}
-.nav-cta{
-  font-size:13px;
-  font-weight:600;
-  background:var(--blue);
-  color:#fff !important;
-  padding:9px 20px;
-  border-radius:6px;
-  border:1.5px solid var(--blue);
-  cursor:pointer;
-  text-decoration:none;
-  transition:background .15s,color .15s,border-color .15s
-}    .nav-cta:hover{background:var(--blue-lt)}
+    .nav-cta{font-size:13px;font-weight:600;background:var(--blue);color:#fff !important;padding:9px 20px;border-radius:6px;border:1.5px solid var(--blue);cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s}
+    .nav-cta:hover{background:var(--blue-lt)}
+
+    /* ── Language Switcher Dropdown ── */
+    .lang-switcher{position:relative;flex-shrink:0}
+    .lang-trigger{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:7px;cursor:pointer;padding:6px 10px;display:flex;align-items:center;gap:6px;transition:border-color .15s,color .15s;line-height:1;white-space:nowrap}
+    .lang-trigger:hover{border-color:var(--blue);color:var(--text)}
+    .lang-trigger .lang-flag{font-size:15px;line-height:1}
+    .lang-trigger .lang-code{font-size:11px;font-weight:700;letter-spacing:.3px}
+    .lang-trigger .lang-chevron{width:12px;height:12px;opacity:.5;transition:transform .2s;flex-shrink:0}
+    .lang-switcher.open .lang-chevron{transform:rotate(180deg)}
+    .lang-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--white);border:1px solid var(--border);border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.10);overflow:hidden;min-width:140px;opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .18s,transform .18s;z-index:9999}
+    .lang-switcher.open .lang-dropdown{opacity:1;pointer-events:auto;transform:translateY(0)}
+    .lang-option{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text);background:none;border:none;cursor:pointer;padding:10px 14px;display:flex;align-items:center;gap:9px;width:100%;text-align:left;transition:background .12s}
+    .lang-option:hover{background:var(--bg)}
+    .lang-option.active{background:var(--blue-bg);color:var(--blue);font-weight:600}
+    .lang-option .lang-flag{font-size:16px;line-height:1}
+    .lang-option .lang-name{flex:1}
+    .lang-option .lang-check{width:14px;height:14px;color:var(--blue);opacity:0}
+    .lang-option.active .lang-check{opacity:1}
+    .lang-trigger{min-width:72px;justify-content:space-between}
+    .lang-switcher.open .lang-dropdown{animation:langFadeIn .18s ease forwards}
+    @keyframes langFadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
     .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
     .nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px}
     .mobile-menu{display:none;position:fixed;inset:0;background:var(--white);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:28px}
     .mobile-menu.open{display:flex}
     .mobile-menu a{font-size:20px;font-weight:500;color:var(--text);text-decoration:none}
     .mobile-close{position:absolute;top:20px;right:20px;background:none;border:none;font-size:28px;cursor:pointer}
+    .mobile-lang{display:flex;gap:8px;margin-top:8px}
+    .mobile-lang .lang-btn{font-size:14px;padding:8px 16px;border:1px solid var(--border);border-radius:7px}
+    .mobile-lang .lang-btn.active{background:var(--blue);color:white;border-color:var(--blue)}
+
     .hero-wrap{background:var(--blue);padding:80px 0 72px}
     .hero-inner{max-width:var(--max);margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 380px;gap:60px;align-items:center}
     .hero-kicker{display:inline-block;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 11px;border-radius:4px;margin-bottom:22px}
@@ -78,19 +95,8 @@
     .hiw-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px}
     .hiw-desc{font-size:13.5px;color:var(--muted);line-height:1.75}
     .about-grid{display:grid;grid-template-columns:200px 1fr;gap:52px;align-items:start}
-   .about-photo{
-  width:200px;
-  height:270px;
-  overflow:hidden;
-  position:relative;
-}
-
-.about-photo img{
-  position:absolute;
-  top:20px; /* POSUN RUČNĚ */
-  left:0;
-  width:100%;
-}
+    .about-photo{width:200px;height:270px;overflow:hidden;position:relative}
+    .about-photo img{position:absolute;top:20px;left:0;width:100%}
     .about-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--subtle);font-size:11px;letter-spacing:1px;text-transform:uppercase}
     .about-placeholder svg{width:36px;height:36px}
     .about-txt{font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:14px}
@@ -115,6 +121,22 @@
     .add-more{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--muted);background:none;border:1.5px dashed var(--border);padding:9px 18px;border-radius:7px;cursor:pointer;margin-top:6px;transition:border-color .15s,color .15s}
     .add-more:hover{border-color:var(--blue);color:var(--blue)}
     .pokracovat-wrap{margin-top:20px}
+    /* ── File upload ── */
+    .upload-row{display:flex;flex-direction:column;gap:10px}
+    .upload-item{display:flex;align-items:center;gap:12px;background:var(--bg);border:1.5px dashed var(--border);border-radius:8px;padding:12px 14px;transition:border-color .15s}
+    .upload-item:hover{border-color:var(--blue)}
+    .upload-item.has-file{border-style:solid;border-color:var(--blue-br);background:var(--blue-bg)}
+    .upload-icon{width:32px;height:32px;background:var(--blue-bg);border:1px solid var(--blue-br);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .upload-icon svg{width:15px;height:15px;color:var(--blue)}
+    .upload-item.has-file .upload-icon{background:var(--blue);border-color:var(--blue)}
+    .upload-item.has-file .upload-icon svg{color:white}
+    .upload-meta{flex:1;min-width:0}
+    .upload-label{font-size:13px;font-weight:600;color:var(--text)}
+    .upload-hint{font-size:11px;color:var(--subtle);margin-top:1px}
+    .upload-filename{font-size:11px;color:var(--blue);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .upload-btn{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--blue);background:var(--white);border:1.5px solid var(--blue-br);border-radius:6px;padding:6px 12px;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s;flex-shrink:0}
+    .upload-btn:hover{background:var(--blue-bg);border-color:var(--blue)}
+    .upload-input{display:none}
     .pokracovat-btn{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;background:var(--blue);color:var(--white);padding:15px 32px;border-radius:7px;border:none;cursor:pointer;width:100%;transition:background .15s}
     .pokracovat-btn:hover{background:var(--blue-lt)}
     .platba-sekce{display:none;margin-top:24px}
@@ -195,29 +217,62 @@
     .modal-footer{margin-top:24px;display:flex;justify-content:flex-end}
     .modal-footer button{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;background:var(--blue);color:var(--white);padding:10px 22px;border-radius:7px;border:none;cursor:pointer}
     @media(max-width:960px){.hero-inner{grid-template-columns:1fr}.hero-card{display:none}.form-layout{grid-template-columns:1fr}.form-sidebar{position:static}.contact-grid{grid-template-columns:1fr;gap:48px}}
-    @media(max-width:768px){.services-grid{grid-template-columns:1fr}.hiw-grid{grid-template-columns:1fr;gap:28px}.about-grid{grid-template-columns:1fr}.price-grid{grid-template-columns:1fr}.nav-links{display:none}.nav-hamburger{display:flex}}
+    @media(max-width:768px){.services-grid{grid-template-columns:1fr}.hiw-grid{grid-template-columns:1fr;gap:28px}.about-grid{grid-template-columns:1fr}.price-grid{grid-template-columns:1fr}.nav-links{display:none}.nav-hamburger{display:flex}.lang-switcher{display:none}}
     @media(max-width:600px){.wrap,.nav-inner,.hero-inner,.proof-inner,.footer-inner{padding-left:20px;padding-right:20px}section{padding:60px 0}.hero-wrap{padding:60px 0}.fg-group{grid-template-columns:1fr}.fg.full{grid-column:1}.proof-sep{display:none}}
   </style>
 </head>
 <body>
 
+
 <div class="mobile-menu" id="mobileMenu">
   <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
-  <a href="#sluzby" onclick="closeMobileMenu()">Služby</a>
-  <a href="#jak-to-funguje" onclick="closeMobileMenu()">Jak to funguje</a>
-  <a href="#o-nas" onclick="closeMobileMenu()">O nás</a>
-  <a href="#kontakt" onclick="closeMobileMenu()">Kontakt</a>
-  <a href="#formular" onclick="closeMobileMenu()" style="background:var(--blue);color:var(--white);padding:12px 28px;border-radius:7px;font-weight:600;">Vyplnit formulář</a>
+  <a href="#sluzby" id="mob-services" onclick="closeMobileMenu()">Služby</a>
+  <a href="#jak-to-funguje" id="mob-how" onclick="closeMobileMenu()">Jak to funguje</a>
+  <a href="#o-nas" id="mob-about" onclick="closeMobileMenu()">O nás</a>
+  <a href="#kontakt" id="mob-contact" onclick="closeMobileMenu()">Kontakt</a>
+  <a href="#formular" id="nav-cta-m" onclick="closeMobileMenu()" style="background:var(--blue);color:var(--white);padding:12px 28px;border-radius:7px;font-weight:600;">Vyplnit formulář</a>
+  <div class="mobile-lang">
+    <button class="lang-btn active" data-lang="cs" onclick="switchLang('cs')"><svg width="22" height="15" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" rx="2" fill="#D7141A"/><rect width="20" height="7" fill="#fff"/><polygon points="0,0 9,7 0,14" fill="#11457E"/></svg> CZ</button>
+    <button class="lang-btn" data-lang="en" onclick="switchLang('en')"><svg width="22" height="15" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="40" rx="3" fill="#012169"/><path d="M0 0 L60 40 M60 0 L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0 L60 40 M60 0 L0 40" stroke="#C8102E" stroke-width="5"/><path d="M30 0 V40 M0 20 H60" stroke="#fff" stroke-width="13"/><path d="M30 0 V40 M0 20 H60" stroke="#C8102E" stroke-width="8"/></svg> EN</button>
+    <button class="lang-btn" data-lang="de" onclick="switchLang('de')"><svg width="22" height="15" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" rx="2" fill="#FFCE00"/><rect width="20" height="9.33" fill="#DD0000"/><rect width="20" height="4.67" fill="#000"/></svg> DE</button>
+  </div>
 </div>
 
 <nav>
   <div class="nav-inner">
-<a href="#" class="logo"><img src="freist.png" alt="Freistellung Express"></a>    <div class="nav-links">
-      <a href="#sluzby">Služby</a>
-      <a href="#jak-to-funguje">Jak to funguje</a>
-      <a href="#o-nas">O nás</a>
-      <a href="#kontakt">Kontakt</a>
-      <a href="#formular" class="nav-cta">Vyplnit formulář &rarr;</a>
+    <a href="#" class="logo"><img src="freist.png" alt="Freistellung Express"></a>
+    <div class="nav-links">
+      <a href="#sluzby" id="nav-services">Služby</a>
+      <a href="#jak-to-funguje" id="nav-how">Jak to funguje</a>
+      <a href="#o-nas" id="nav-about">O nás</a>
+      <a href="#kontakt" id="nav-contact">Kontakt</a>
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-trigger" onclick="toggleLangDropdown(event)" aria-haspopup="true">
+          <span class="lang-flag" id="trigger-flag">
+            <svg width="20" height="14" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" rx="2" fill="#D7141A"/><rect width="20" height="7" fill="#fff"/><polygon points="0,0 9,7 0,14" fill="#11457E"/></svg>
+          </span>
+          <span class="lang-code" id="trigger-code">CZ</span>
+          <svg class="lang-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <button class="lang-option active" data-lang="cs" onclick="switchLang('cs')">
+            <svg width="22" height="15" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" rx="2" fill="#D7141A"/><rect width="20" height="7" fill="#fff"/><polygon points="0,0 9,7 0,14" fill="#11457E"/></svg>
+            <span class="lang-name">Čeština</span>
+            <svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+          <button class="lang-option" data-lang="en" onclick="switchLang('en')">
+            <svg width="22" height="15" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="40" rx="3" fill="#012169"/><path d="M0 0 L60 40 M60 0 L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0 L60 40 M60 0 L0 40" stroke="#C8102E" stroke-width="5"/><path d="M30 0 V40 M0 20 H60" stroke="#fff" stroke-width="13"/><path d="M30 0 V40 M0 20 H60" stroke="#C8102E" stroke-width="8"/></svg>
+            <span class="lang-name">English</span>
+            <svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+          <button class="lang-option" data-lang="de" onclick="switchLang('de')">
+            <svg width="22" height="15" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" rx="2" fill="#FFCE00"/><rect width="20" height="9.33" fill="#DD0000"/><rect width="20" height="4.67" fill="#000"/></svg>
+            <span class="lang-name">Deutsch</span>
+            <svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+      </div>
+      <a href="#formular" class="nav-cta" id="nav-cta">Vyplnit formulář &rarr;</a>
     </div>
     <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
   </div>
@@ -226,54 +281,54 @@
 <div class="hero-wrap">
   <div class="hero-inner">
     <div>
-      <div class="hero-kicker">Freistellungsbescheinigung §48b EStG</div>
-      <h1>Vyřídíme Freistellung<br>za vás do <span>24 hodin</span></h1>
-      <p class="hero-sub">Bez papírování. Bez němčiny. Z telefonu.</p>
-      <div class="hero-warning">Bez Freistellung ti mohou strhnout až <b>15&nbsp;% z faktury</b> v Německu.</div>
-      <a href="#formular" class="btn-main">Vyplnit formulář &rarr;</a>
+      <div class="hero-kicker" id="hero-kicker">Freistellungsbescheinigung §48b EStG</div>
+      <h1 id="hero-h1">Vyřídíme Freistellung<br>za vás do <span>24 hodin</span></h1>
+      <p class="hero-sub" id="hero-sub">Bez papírování. Bez němčiny. Z telefonu.</p>
+      <div class="hero-warning" id="hero-warning">Bez Freistellung ti mohou strhnout až <b>15&nbsp;% z faktury</b> v Německu.</div>
+      <a href="#formular" class="btn-main" id="hero-btn">Vyplnit formulář &rarr;</a>
     </div>
     <div class="hero-card">
-      <div class="hero-card-label">Proč to řešit</div>
-      <div class="hero-stat"><div class="hero-stat-num">24&nbsp;h</div><div class="hero-stat-label">Průměrná doba<br>vyřízení žádosti</div></div>
-      <div class="hero-stat"><div class="hero-stat-num">15&nbsp;%</div><div class="hero-stat-label">Úspora z každé<br>faktury v Německu</div></div>
-      <div class="hero-stat"><div class="hero-stat-num">§48b</div><div class="hero-stat-label">EStG — zákonný<br>podklad žádosti</div></div>
-      <div class="hero-card-alert"><b>Bez Freistellung</b> musí německý odběratel strhnout 15&nbsp;% z každé vaší faktury a odvést je finančnímu úřadu.</div>
+      <div class="hero-card-label" id="hero-card-label">Proč to řešit</div>
+      <div class="hero-stat"><div class="hero-stat-num">24&nbsp;h</div><div class="hero-stat-label" id="stat1-label">Průměrná doba<br>vyřízení žádosti</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">15&nbsp;%</div><div class="hero-stat-label" id="stat2-label">Úspora z každé<br>faktury v Německu</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">§48b</div><div class="hero-stat-label" id="stat3-label">EStG — zákonný<br>podklad žádosti</div></div>
+      <div class="hero-card-alert" id="hero-card-alert"><b>Bez Freistellung</b> musí německý odběratel strhnout 15&nbsp;% z každé vaší faktury a odvést je finančnímu úřadu.</div>
     </div>
   </div>
 </div>
 
 <div class="proof-bar">
   <div class="proof-inner">
-    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Vyřízení do 24 hodin</div>
+    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span id="proof1">Vyřízení do 24 hodin</span></div>
     <div class="proof-sep"></div>
-    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Komunikace česky</div>
+    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span id="proof2">Komunikace česky</span></div>
     <div class="proof-sep"></div>
-    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Platba kartou nebo převodem</div>
+    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span id="proof3">Platba kartou nebo převodem</span></div>
     <div class="proof-sep"></div>
-    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Zkušenost z praxe v Německu</div>
+    <div class="proof-item"><div class="proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span id="proof4">Zkušenost z praxe v Německu</span></div>
   </div>
 </div>
 
 <section id="sluzby">
   <div class="wrap">
-    <div class="sec-label">Služby</div>
-    <div class="sec-title">Co pro vás vyřídíme</div>
-    <p class="sec-desc">Postaráme se o veškerou administrativu — vy se soustředíte na práci.</p>
+    <div class="sec-label" id="sec-services-label">Služby</div>
+    <div class="sec-title" id="sec-services-title">Co pro vás vyřídíme</div>
+    <p class="sec-desc" id="sec-services-desc">Postaráme se o veškerou administrativu — vy se soustředíte na práci.</p>
     <div class="services-grid">
       <div class="svc">
         <div class="svc-top"><div class="svc-price">80 <span>€</span></div></div>
-        <div class="svc-name">Podání žádosti</div>
-        <div class="svc-desc">Připravíme a odešleme žádost na příslušný Finanzamt. V případě zamítnutí není v ceně opakované řešení.</div>
+        <div class="svc-name" id="svc1-name">Podání žádosti</div>
+        <div class="svc-desc" id="svc1-desc">Připravíme a odešleme žádost na příslušný Finanzamt. V případě zamítnutí není v ceně opakované řešení.</div>
       </div>
       <div class="svc">
-        <div class="svc-top"><div class="svc-price">100 <span>€</span></div><div class="svc-badge">Nejoblíbenější</div></div>
-        <div class="svc-name">Kompletní vyřízení</div>
-        <div class="svc-desc">Připravíme a podáme žádost na Finanzamt. Veškerou komunikaci s úřadem řešíme za vás až do úplného schválení.</div>
+        <div class="svc-top"><div class="svc-price">100 <span>€</span></div><div class="svc-badge" id="svc2-badge">Nejoblíbenější</div></div>
+        <div class="svc-name" id="svc2-name">Kompletní vyřízení</div>
+        <div class="svc-desc" id="svc2-desc">Připravíme a podáme žádost na Finanzamt. Veškerou komunikaci s úřadem řešíme za vás až do úplného schválení.</div>
       </div>
       <div class="svc">
         <div class="svc-top"><div class="svc-price">120 <span>€</span></div></div>
-        <div class="svc-name">Komplet se Steuernummer</div>
-        <div class="svc-desc">Nemáte daňové číslo v Německu (Steuernummer)? Vyřídíme ho za vás jako součást balíčku.</div>
+        <div class="svc-name" id="svc3-name">Komplet se Steuernummer</div>
+        <div class="svc-desc" id="svc3-desc">Nemáte daňové číslo v Německu (Steuernummer)? Vyřídíme ho za vás jako součást balíčku.</div>
       </div>
     </div>
   </div>
@@ -281,26 +336,26 @@
 
 <section class="alt" id="jak-to-funguje">
   <div class="wrap">
-    <div class="sec-label">Jak to funguje</div>
-    <div class="sec-title">Tři kroky k vaší Freistellung</div>
-    <p class="sec-desc">Celý proces zvládnete z telefonu za pár minut.</p>
+    <div class="sec-label" id="sec-how-label">Jak to funguje</div>
+    <div class="sec-title" id="sec-how-title">Tři kroky k vaší Freistellung</div>
+    <p class="sec-desc" id="sec-how-desc">Celý proces zvládnete z telefonu za pár minut.</p>
     <div class="hiw-grid">
-      <div><div class="hiw-num">1</div><div class="hiw-title">Vyplníte formulář</div><div class="hiw-desc">Vyplníte jednoduchý formulář online. Nepotřebujete žádné německé dokumenty ani znalost němčiny.</div></div>
-      <div><div class="hiw-num">2</div><div class="hiw-title">Vyberete a zaplatíte</div><div class="hiw-desc">Zvolíte typ služby a zaplatíte kartou nebo bankovním převodem. Po přijetí platby okamžitě začínáme.</div></div>
-      <div><div class="hiw-num">3</div><div class="hiw-title">Dostanete dokument</div><div class="hiw-desc">Do 24 hodin podáme žádost na Finanzamt. Po schválení dostanete Freistellungsbescheinigung e-mailem.</div></div>
+      <div><div class="hiw-num">1</div><div class="hiw-title" id="step1-title">Vyplníte formulář</div><div class="hiw-desc" id="step1-desc">Vyplníte jednoduchý formulář online. Nepotřebujete žádné německé dokumenty ani znalost němčiny.</div></div>
+      <div><div class="hiw-num">2</div><div class="hiw-title" id="step2-title">Vyberete a zaplatíte</div><div class="hiw-desc" id="step2-desc">Zvolíte typ služby a zaplatíte kartou nebo bankovním převodem. Po přijetí platby okamžitě začínáme.</div></div>
+      <div><div class="hiw-num">3</div><div class="hiw-title" id="step3-title">Dostanete dokument</div><div class="hiw-desc" id="step3-desc">Do 24 hodin podáme žádost na Finanzamt. Po schválení dostanete Freistellungsbescheinigung e-mailem.</div></div>
     </div>
   </div>
 </section>
 
 <section class="alt" id="formular">
   <div class="wrap">
-    <div class="sec-label">Formulář</div>
-    <div class="sec-title">Vyplňte své údaje</div>
-    <p class="sec-desc">Vyplňte formulář a my se postaráme o zbytek.</p>
+    <div class="sec-label" id="form-label">Formulář</div>
+    <div class="sec-title" id="form-title">Vyplňte své údaje</div>
+    <p class="sec-desc" id="form-desc">Vyplňte formulář a my se postaráme o zbytek.</p>
     <div class="form-layout">
       <div>
         <div class="form-block">
-          <div class="form-block-title">Základní údaje</div>
+          <div class="form-block-title" id="form-basic">Základní údaje</div>
           <div class="fg-group">
             <div class="fg" id="fg-jmeno"><label>Jméno a příjmení *</label><input type="text" id="jmeno" placeholder="Jan Novák" autocomplete="name"><span class="err-msg">Zadejte jméno i příjmení</span></div>
             <div class="fg" id="fg-narozeni"><label>Datum narození *</label><input type="text" id="narozeni" placeholder="01.01.1985"><span class="err-msg">Formát: DD.MM.RRRR</span></div>
@@ -310,7 +365,7 @@
           </div>
         </div>
         <div class="form-block">
-          <div class="form-block-title">Adresa bydliště</div>
+          <div class="form-block-title" id="form-address">Adresa bydliště</div>
           <div class="fg-group">
             <div class="fg" id="fg-ulice"><label>Ulice a číslo *</label><input type="text" id="ulice" placeholder="Novákova 1"><span class="err-msg">Vyplňte ulici a číslo</span></div>
             <div class="fg" id="fg-mesto"><label>Město *</label><input type="text" id="mesto" placeholder="Praha"><span class="err-msg">Vyplňte město</span></div>
@@ -319,23 +374,23 @@
           </div>
         </div>
         <div class="form-block">
-          <div class="form-block-title">Podnikání</div>
+          <div class="form-block-title" id="form-business">Podnikání</div>
           <div class="fg-group">
             <div class="fg" id="fg-firma"><label>Název firmy / OSVČ jméno *</label><input type="text" id="firma" placeholder="Jan Novák — stavební práce"><span class="err-msg">Vyplňte název firmy nebo jméno</span></div>
-            <div class="fg"><label>Typ podnikání *</label><select id="typ-podnikani"><option value="OSVČ">OSVČ</option><option value="s.r.o.">s.r.o.</option><option value="a.s.">a.s.</option></select></div>
+            <div class="fg"><label id="biztype-label">Typ podnikání *</label><select id="typ-podnikani"><option value="OSVČ">OSVČ</option><option value="s.r.o.">s.r.o.</option><option value="a.s.">a.s.</option></select></div>
             <div class="fg full" id="fg-obor"><label>Obor *</label><input type="text" id="obor" placeholder="stavebnictví, montáž, instalace..."><span class="err-msg">Vyplňte obor podnikání</span></div>
           </div>
         </div>
         <div class="form-block">
-          <div class="form-block-title">Daňové údaje</div>
+          <div class="form-block-title" id="form-tax">Daňové údaje</div>
           <div class="fg-group">
-            <div class="fg"><label>DIČ (pokud máš)</label><input type="text" id="dic" placeholder="CZ1234567890"></div>
-            <div class="fg"><label>Steuernummer (pokud máš)</label><input type="text" id="steuernummer" placeholder="nechej prázdné pokud nemáš"></div>
-            <div class="fg"><label>Máš už Freistellung?</label><select id="ma-freistellung"><option value="Ne">Ne</option><option value="Ano">Ano</option></select></div>
+            <div class="fg" id="fg-dic"><label>DIČ (pokud máš)</label><input type="text" id="dic" placeholder="CZ1234567890"></div>
+            <div class="fg" id="fg-steuernr"><label>Steuernummer (pokud máš)</label><input type="text" id="steuernummer" placeholder="nechej prázdné pokud nemáš"></div>
+            <div class="fg" id="fg-has-freistellung"><label id="fg-has-freistellung-label">Máš už Freistellung?</label><select id="ma-freistellung"><option id="opt-no" value="Ne">Ne</option><option id="opt-yes" value="Ano">Ano</option></select></div>
           </div>
         </div>
         <div class="form-block">
-          <div class="form-block-title">Práce v Německu</div>
+          <div class="form-block-title" id="form-work">Práce v Německu</div>
           <div class="fg-group">
             <div class="fg" id="fg-od-kdy"><label>Od kdy pracuješ v Německu *</label><input type="text" id="od-kdy" placeholder="01.01.2024"><span class="err-msg">Vyplňte datum</span></div>
             <div class="fg" id="fg-jak-dlouho"><label>Předpokládaná doba práce *</label><input type="text" id="jak-dlouho" placeholder="6 měsíců"><span class="err-msg">Vyplňte dobu práce</span></div>
@@ -343,7 +398,7 @@
           </div>
         </div>
         <div class="form-block">
-          <div class="form-block-title">Zakázky v Německu</div>
+          <div class="form-block-title" id="form-orders">Zakázky v Německu</div>
           <div id="zakazky-container">
             <div class="zakazka-block" id="zakazka-1">
               <div class="fg-group">
@@ -354,84 +409,114 @@
               </div>
             </div>
           </div>
-          <button class="add-more" type="button" onclick="pridatZakazku()">+ Přidat další zakázku</button>
+          <button class="add-more" type="button" id="btn-add-order" onclick="pridatZakazku()">+ Přidat další zakázku</button>
+        </div>
+        <div class="form-block">
+          <div class="form-block-title" id="form-uploads">Přílohy</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px" id="uploads-desc">Nahrajte dokumenty potřebné pro vyřízení žádosti.</p>
+          <div class="upload-row">
+            <div class="upload-item" id="upload-item-zivnostak">
+              <div class="upload-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="upload-meta">
+                <div class="upload-label" id="upload-zivnostak-label">Živnostenský list</div>
+                <div class="upload-hint" id="upload-hint-1">PDF, JPG nebo PNG, max. 10 MB</div>
+                <div class="upload-filename" id="upload-zivnostak-name"></div>
+              </div>
+              <button class="upload-btn" type="button" id="upload-zivnostak-btn" onclick="document.getElementById('input-zivnostak').click()">Vybrat soubor</button>
+              <input class="upload-input" type="file" id="input-zivnostak" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(this,'upload-item-zivnostak','upload-zivnostak-name','upload-zivnostak-btn')">
+            </div>
+            <div class="upload-item" id="upload-item-smlouva">
+              <div class="upload-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              </div>
+              <div class="upload-meta">
+                <div class="upload-label" id="upload-smlouva-label">Smlouva / objednávka</div>
+                <div class="upload-hint" id="upload-hint-2">PDF, JPG nebo PNG, max. 10 MB</div>
+                <div class="upload-filename" id="upload-smlouva-name"></div>
+              </div>
+              <button class="upload-btn" type="button" id="upload-smlouva-btn" onclick="document.getElementById('input-smlouva').click()">Vybrat soubor</button>
+              <input class="upload-input" type="file" id="input-smlouva" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(this,'upload-item-smlouva','upload-smlouva-name','upload-smlouva-btn')">
+            </div>
+          </div>
         </div>
         <div class="pokracovat-wrap">
-          <button class="pokracovat-btn" type="button" onclick="pokracovatNaPlatbu()">Pokračovat k výběru služby &rarr;</button>
+          <button class="pokracovat-btn" type="button" id="btn-continue" onclick="pokracovatNaPlatbu()">Pokračovat k výběru služby &rarr;</button>
         </div>
         <div class="platba-sekce" id="platba">
-          <div class="platba-header">Krok 2 — Vyberte typ služby a zaplaťte</div>
+          <div class="platba-header" id="pay-step">Krok 2 — Vyberte typ služby a zaplaťte</div>
           <div class="price-grid">
-            <div class="pc sel" onclick="vyberSluzbu(this,'vyrizeni',100)"><div class="pc-badge">Doporučeno</div><div class="pc-radio"></div><div class="pc-eur">100 €</div><div class="pc-name">Kompletní vyřízení</div><div class="pc-info">Podání + komunikace s úřadem do úplného schválení.</div></div>
-            <div class="pc" onclick="vyberSluzbu(this,'podani',80)"><div class="pc-radio"></div><div class="pc-eur">80 €</div><div class="pc-name">Podání</div><div class="pc-info">Připravíme a odešleme žádost na Finanzamt.</div></div>
-            <div class="pc" onclick="vyberSluzbu(this,'steuernummer',120)"><div class="pc-radio"></div><div class="pc-eur">120 €</div><div class="pc-name">Komplet se Steuernummer</div><div class="pc-info">Vyřídíme Steuernummer i Freistellung za vás.</div></div>
+            <div class="pc sel" onclick="vyberSluzbu(this,'vyrizeni',100)"><div class="pc-badge" id="pc1-badge">Doporučeno</div><div class="pc-radio"></div><div class="pc-eur">100 €</div><div class="pc-name" id="pc1-name">Kompletní vyřízení</div><div class="pc-info" id="pc1-info">Podání + komunikace s úřadem do úplného schválení.</div></div>
+            <div class="pc" onclick="vyberSluzbu(this,'podani',80)"><div class="pc-radio"></div><div class="pc-eur">80 €</div><div class="pc-name" id="pc2-name">Podání</div><div class="pc-info" id="pc2-info">Připravíme a odešleme žádost na Finanzamt.</div></div>
+            <div class="pc" onclick="vyberSluzbu(this,'steuernummer',120)"><div class="pc-radio"></div><div class="pc-eur">120 €</div><div class="pc-name" id="pc3-name">Komplet se Steuernummer</div><div class="pc-info" id="pc3-info">Vyřídíme Steuernummer i Freistellung za vás.</div></div>
           </div>
-          <div class="rozdil-info"><strong>Kompletní vyřízení vs. Podání:</strong> Finanzamt může vyžadovat doplnění informací. Při kompletním vyřízení veškerou komunikaci řešíme za vás až do schválení.</div>
+          <div class="rozdil-info" id="rozdil-info"><strong>Kompletní vyřízení vs. Podání:</strong> Finanzamt může vyžadovat doplnění informací. Při kompletním vyřízení veškerou komunikaci řešíme za vás až do schválení.</div>
           <div class="pay-row">
-            <button class="pay-btn primary" type="button" onclick="zpracovatPlatbu()">💳 Zaplatit kartou</button>
-            <button class="pay-btn secondary" type="button" onclick="zobrazBankovniPrevod()">🏦 Bankovní převod</button>
+            <button class="pay-btn primary" type="button" id="btn-card" onclick="zpracovatPlatbu()">💳 Zaplatit kartou</button>
+            <button class="pay-btn secondary" type="button" id="btn-transfer" onclick="zobrazBankovniPrevod()">🏦 Bankovní převod</button>
           </div>
           <div class="bankovni-box" id="bankovni-info">
-            <p style="font-weight:600;color:var(--text);margin-bottom:8px;">Platba bankovním převodem</p>
-            <p>Číslo účtu: <strong>DOPLŇTE ČÍSLO ÚČTU</strong><br>Variabilní symbol: pošleme e-mailem po odeslání formuláře<br>Po přijetí platby začínáme zpracovávat do 24 hodin.</p>
+            <p style="font-weight:600;color:var(--text);margin-bottom:8px;" id="bank-title">Platba bankovním převodem</p>
+            <p id="bank-body">Číslo účtu: <strong>DOPLŇTE ČÍSLO ÚČTU</strong><br>Variabilní symbol: pošleme e-mailem po odeslání formuláře<br>Po přijetí platby začínáme zpracovávat do 24 hodin.</p>
           </div>
           <div class="success-banner" id="success-msg">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <p><strong>Formulář byl úspěšně odeslán!</strong><br>Do 24 hodin vás kontaktujeme na uvedený e-mail nebo telefon s dalšími kroky. Děkujeme za důvěru.</p>
+            <p id="success-text"><strong>Formulář byl úspěšně odeslán!</strong><br>Do 24 hodin vás kontaktujeme na uvedený e-mail nebo telefon s dalšími kroky. Děkujeme za důvěru.</p>
           </div>
         </div>
       </div>
       <div class="form-sidebar">
         <div class="sidebar-box">
-          <div class="sidebar-box-title">Co dostanete</div>
-          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title">Podání do 24 hodin</div><div class="sidebar-feat-desc">Okamžitě po přijetí platby</div></div></div>
-          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title">Komunikace česky</div><div class="sidebar-feat-desc">Žádná němčina ani angličtina</div></div></div>
-          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title">Kompletní vyřízení</div><div class="sidebar-feat-desc">Komunikujeme s úřadem za vás</div></div></div>
-          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title">Dokument e-mailem</div><div class="sidebar-feat-desc">Po schválení dostanete Freistellung</div></div></div>
+          <div class="sidebar-box-title" id="sidebar-title">Co dostanete</div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf1-title">Podání do 24 hodin</div><div class="sidebar-feat-desc" id="sf1-desc">Okamžitě po přijetí platby</div></div></div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf2-title">Komunikace česky</div><div class="sidebar-feat-desc" id="sf2-desc">Žádná němčina ani angličtina</div></div></div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf3-title">Kompletní vyřízení</div><div class="sidebar-feat-desc" id="sf3-desc">Komunikujeme s úřadem za vás</div></div></div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf4-title">Dokument e-mailem</div><div class="sidebar-feat-desc" id="sf4-desc">Po schválení dostanete Freistellung</div></div></div>
         </div>
         <div class="sidebar-alert">
-          <div class="sidebar-alert-t">⚠ Proč to řešit hned?</div>
-          <div class="sidebar-alert-d">Každá faktura bez Freistellung = 15&nbsp;% stržených. Při faktuře 10&nbsp;000&nbsp;€ přijdete o 1&nbsp;500&nbsp;€.</div>
+          <div class="sidebar-alert-t" id="sidebar-alert-t">⚠ Proč to řešit hned?</div>
+          <div class="sidebar-alert-d" id="sidebar-alert-d">Každá faktura bez Freistellung = 15&nbsp;% stržených. Při faktuře 10&nbsp;000&nbsp;€ přijdete o 1&nbsp;500&nbsp;€.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
 <section id="o-nas">
   <div class="wrap">
     <div class="about-grid">
-      <div class="about-photo">
-  <img src="mira_jaros.png" alt="Miroslav Jaroš">
-</div>
+      <div class="about-photo"><img src="mira_jaros.png" alt="Miroslav Jaroš"></div>
       <div>
-        <div class="sec-label">O nás</div>
-        <div class="sec-title">Člověk, který ví, jak na to</div>
-        <p class="about-txt">Sám pracuji v Německu a vím, jak složité může být řešit úřady, papíry a cizí jazyk. Když jsem poprvé řešil Freistellung, platil jsem více a čekal 4 měsíce. Proto jsem vytvořil tuto službu, která pomáhá lidem jako jsem já — pracujícím v Německu, kteří chtějí mít vše vyřešené jednoduše a bez stresu.</p>
-        <p class="about-txt">Pomáhám s administrativním podáním žádosti o Freistellung a dalšími potřebnými kroky, aby ses mohl soustředit na práci, ne na papírování. Komunikace je rychlá, lidská a bez zbytečných složitostí.</p>
+        <div class="sec-label" id="about-label">O nás</div>
+        <div class="sec-title" id="about-title">Člověk, který ví, jak na to</div>
+        <p class="about-txt" id="about-p1">Sám pracuji v Německu a vím, jak složité může být řešit úřady, papíry a cizí jazyk. Když jsem poprvé řešil Freistellung, platil jsem více a čekal 4 měsíce. Proto jsem vytvořil tuto službu, která pomáhá lidem jako jsem já — pracujícím v Německu, kteří chtějí mít vše vyřešené jednoduše a bez stresu.</p>
+        <p class="about-txt" id="about-p2">Pomáhám s administrativním podáním žádosti o Freistellung a dalšími potřebnými kroky, aby ses mohl soustředit na práci, ne na papírování. Komunikace je rychlá, lidská a bez zbytečných složitostí.</p>
         <div class="about-name">Miroslav Jaroš</div>
-        <div class="about-role">Zakladatel · Freistellung Express · IČO 09814850</div>
+        <div class="about-role" id="about-role">Zakladatel · Freistellung Express · IČO 09814850</div>
       </div>
     </div>
   </div>
 </section>
+
 <section id="kontakt">
   <div class="wrap">
     <div class="contact-grid">
       <div>
-        <div class="sec-label">Kontakt</div>
-        <div class="sec-title">Máte otázku?</div>
-        <p class="contact-desc">Rádi odpovíme na veškeré dotazy ohledně Freistellung, daňového čísla nebo procesu podání. Odpovídáme zpravidla do hodiny.</p>
+        <div class="sec-label" id="contact-label">Kontakt</div>
+        <div class="sec-title" id="contact-title">Máte otázku?</div>
+        <p class="contact-desc" id="contact-desc">Rádi odpovíme na veškeré dotazy ohledně Freistellung, daňového čísla nebo procesu podání. Odpovídáme zpravidla do hodiny.</p>
         <div class="contact-cards">
-          <a href="mailto:mira.jaros7@seznam.cz" class="cc"><div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="cc-label">E-mail</div><div class="cc-val">mira.jaros7@seznam.cz</div></div></a>
-          <a href="https://wa.me/420777039240" class="cc" target="_blank" rel="noopener"><div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="cc-label">WhatsApp</div><div class="cc-val">+420 777 039 240</div></div></a>
+          <a href="mailto:mira.jaros7@seznam.cz" class="cc"><div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="cc-label" id="cc-email-label">E-mail</div><div class="cc-val">mira.jaros7@seznam.cz</div></div></a>
+          <a href="https://wa.me/420777039240" class="cc" target="_blank" rel="noopener"><div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="cc-label" id="cc-wa-label">WhatsApp</div><div class="cc-val">+420 777 039 240</div></div></a>
         </div>
       </div>
       <div>
-        <div style="margin-bottom:20px;"><div class="sec-label">Časté dotazy</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Co je Freistellungsbescheinigung?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Je to osvědčení od německého finančního úřadu (Finanzamt), které potvrzuje, že váš odběratel nemusí srážet 15 % z vašich faktur dle §48b EStG.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Kdo Freistellung potřebuje?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Každý, kdo fakturuje za stavební nebo montážní práce v Německu jako OSVČ nebo firma. Týká se to české i slovenské OSVČ pracující pro německé zákazníky.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Jak dlouho platí Freistellung?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Standardně 3 roky od data vydání.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Potřebuji Steuernummer?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Ano, německé daňové číslo (Steuernummer) je podmínkou pro vydání Freistellung. Pokud ho nemáte, nabízíme balíček včetně jeho vyřízení za 120 €.</div></div>
+        <div style="margin-bottom:20px;"><div class="sec-label" id="faq-label">Časté dotazy</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq1-q-text">Co je Freistellungsbescheinigung?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq1-a">Je to osvědčení od německého finančního úřadu (Finanzamt), které potvrzuje, že váš odběratel nemusí srážet 15 % z vašich faktur dle §48b EStG.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq2-q-text">Kdo Freistellung potřebuje?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq2-a">Každý, kdo fakturuje za stavební nebo montážní práce v Německu jako OSVČ nebo firma. Týká se to české i slovenské OSVČ pracující pro německé zákazníky.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq3-q-text">Jak dlouho platí Freistellung?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq3-a">Závisí na rozhodnutí německého finančního úřadu (Finanzamt). Standardně se vydává na 1–3 roky.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq4-q-text">Potřebuji Steuernummer?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq4-a">Ano, německé daňové číslo (Steuernummer) je podmínkou pro vydání Freistellung. Pokud ho nemáte, nabízíme balíček včetně jeho vyřízení za 120 €.</div></div>
       </div>
     </div>
   </div>
@@ -440,26 +525,656 @@
 <footer>
   <div class="footer-inner">
     <div><div class="footer-logo">Freistellung.express</div><div class="footer-copy">&copy; 2026 Miroslav Jaroš &middot; IČO 09814850</div></div>
-    <div class="footer-links"><a onclick="document.getElementById('modal-podminky').classList.add('open')">Obchodní podmínky</a><a href="mailto:mira.jaros7@seznam.cz">Kontakt</a></div>
+    <div class="footer-links">
+      <a id="footer-terms" onclick="document.getElementById('modal-podminky').classList.add('open')">Obchodní podmínky</a>
+      <a id="footer-contact-link" href="mailto:mira.jaros7@seznam.cz">Kontakt</a>
+    </div>
   </div>
 </footer>
 
 <div class="modal-overlay" id="modal-podminky" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
-    <button class="modal-close-x" onclick="document.getElementById('modal-podminky').classList.remove('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <h2>Obchodní podmínky</h2>
-    <h3>1. Identifikace poskytovatele</h3><p>Miroslav Jaroš &middot; IČO: 09814850 &middot; Neuměřice 144, 273 26<br>E-mail: mira.jaros7@seznam.cz &middot; Tel: +420 777 039 240</p>
-    <h3>2. Předmět služby</h3><p>Poskytovatel nabízí administrativní pomoc s přípravou a podáním žádosti o Freistellungsbescheinigung nach §48b EStG. Poskytovatel není daňovým poradcem ani právníkem.</p>
-    <h3>3. Rozsah služby</h3><ul><li>zpracování údajů dodaných klientem</li><li>příprava žádosti a odeslání na Finanzamt</li><li>u varianty „Kompletní vyřízení": komunikace s úřadem do schválení</li></ul>
-    <h3>4. Povinnosti klienta</h3><p>Klient je povinen poskytnout pravdivé a úplné údaje. Za správnost zadaných informací nese odpovědnost klient.</p>
-    <h3>5. Ceny a platba</h3><ul><li>Kompletní vyřízení: 100 €</li><li>Podání: 80 €</li><li>Komplet se Steuernummer: 120 €</li></ul>
-    <h3>6. Reklamace</h3><p>Stížnosti řešíme individuálně do 5 pracovních dnů.</p>
-    <h3>7. Ochrana osobních údajů</h3><p>Osobní údaje jsou zpracovávány výhradně za účelem poskytnutí služby a nejsou předávány třetím stranám, s výjimkou příslušného německého Finanzamtu.</p>
-    <div class="modal-footer"><button onclick="document.getElementById('modal-podminky').classList.remove('open')">Zavřít</button></div>
+    <button class="modal-close-x" id="modal-close-btn2" onclick="document.getElementById('modal-podminky').classList.remove('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h2 id="modal-title">Obchodní podmínky</h2>
+    <h3 id="modal-s1-t">1. Identifikace poskytovatele</h3><p id="modal-s1-b">Miroslav Jaroš &middot; IČO: 09814850 &middot; Neuměřice 144, 273 26<br>E-mail: mira.jaros7@seznam.cz &middot; Tel: +420 777 039 240</p>
+    <h3 id="modal-s2-t">2. Předmět služby</h3><p id="modal-s2-b">Poskytovatel nabízí administrativní pomoc s přípravou a podáním žádosti o Freistellungsbescheinigung nach §48b EStG. Poskytovatel není daňovým poradcem ani právníkem.</p>
+    <h3 id="modal-s3-t">3. Rozsah služby</h3><ul id="modal-s3-list"><li>zpracování údajů dodaných klientem</li><li>příprava žádosti a odeslání na Finanzamt</li><li>u varianty „Kompletní vyřízení": komunikace s úřadem do schválení</li></ul>
+    <h3 id="modal-s4-t">4. Povinnosti klienta</h3><p id="modal-s4-b">Klient je povinen poskytnout pravdivé a úplné údaje. Za správnost zadaných informací nese odpovědnost klient.</p>
+    <h3 id="modal-s5-t">5. Ceny a platba</h3><ul id="modal-s5-list"><li>Kompletní vyřízení: 100 €</li><li>Podání: 80 €</li><li>Komplet se Steuernummer: 120 €</li></ul>
+    <h3 id="modal-s6-t">6. Reklamace</h3><p id="modal-s6-b">Stížnosti řešíme individuálně do 5 pracovních dnů.</p>
+    <h3 id="modal-s7-t">7. Ochrana osobních údajů</h3><p id="modal-s7-b">Osobní údaje jsou zpracovávány výhradně za účelem poskytnutí služby a nejsou předávány třetím stranám, s výjimkou příslušného německého Finanzamtu.</p>
+    <div class="modal-footer"><button id="modal-close-btn" onclick="document.getElementById('modal-podminky').classList.remove('open')">Zavřít</button></div>
   </div>
 </div>
 
+
+<!-- ══════════════════════════════════════════════
+     TRANSLATIONS — edit here
+═══════════════════════════════════════════════ -->
 <script>
+const TRANSLATIONS = {
+  cs: {
+    nav_services: "Služby",
+    nav_how: "Jak to funguje",
+    nav_about: "O nás",
+    nav_contact: "Kontakt",
+    nav_cta: "Vyplnit formulář →",
+    hero_kicker: "Freistellungsbescheinigung §48b EStG",
+    hero_h1: "Vyřídíme Freistellung<br>za vás do <span>24 hodin</span>",
+    hero_sub: "Bez papírování. Bez němčiny. Z telefonu.",
+    hero_warning: "Bez Freistellung ti mohou strhnout až <b>15&nbsp;% z faktury</b> v Německu.",
+    hero_btn: "Vyplnit formulář →",
+    hero_card_label: "Proč to řešit",
+    stat1_label: "Průměrná doba<br>vyřízení žádosti",
+    stat2_label: "Úspora z každé<br>faktury v Německu",
+    stat3_label: "EStG — zákonný<br>podklad žádosti",
+    hero_card_alert: "<b>Bez Freistellung</b> musí německý odběratel strhnout 15&nbsp;% z každé vaší faktury a odvést je finančnímu úřadu.",
+    proof1: "Vyřízení do 24 hodin",
+    proof2: "Komunikace česky",
+    proof3: "Platba kartou nebo převodem",
+    proof4: "Zkušenost z praxe v Německu",
+    sec_services_label: "Služby",
+    sec_services_title: "Co pro vás vyřídíme",
+    sec_services_desc: "Postaráme se o veškerou administrativu — vy se soustředíte na práci.",
+    svc1_name: "Podání žádosti",
+    svc1_desc: "Připravíme a odešleme žádost na příslušný Finanzamt. V případě zamítnutí není v ceně opakované řešení.",
+    svc2_badge: "Nejoblíbenější",
+    svc2_name: "Kompletní vyřízení",
+    svc2_desc: "Připravíme a podáme žádost na Finanzamt. Veškerou komunikaci s úřadem řešíme za vás až do úplného schválení.",
+    svc3_name: "Komplet se Steuernummer",
+    svc3_desc: "Nemáte daňové číslo v Německu (Steuernummer)? Vyřídíme ho za vás jako součást balíčku.",
+    sec_how_label: "Jak to funguje",
+    sec_how_title: "Tři kroky k vaší Freistellung",
+    sec_how_desc: "Celý proces zvládnete z telefonu za pár minut.",
+    step1_title: "Vyplníte formulář",
+    step1_desc: "Vyplníte jednoduchý formulář online. Nepotřebujete žádné německé dokumenty ani znalost němčiny.",
+    step2_title: "Vyberete a zaplatíte",
+    step2_desc: "Zvolíte typ služby a zaplatíte kartou nebo bankovním převodem. Po přijetí platby okamžitě začínáme.",
+    step3_title: "Dostanete dokument",
+    step3_desc: "Do 24 hodin podáme žádost na Finanzamt. Po schválení dostanete Freistellungsbescheinigung e-mailem.",
+    form_label: "Formulář",
+    form_title: "Vyplňte své údaje",
+    form_desc: "Vyplňte formulář a my se postaráme o zbytek.",
+    form_basic: "Základní údaje",
+    lbl_name: "Jméno a příjmení *", ph_name: "Jan Novák", err_name: "Zadejte jméno i příjmení",
+    lbl_birth: "Datum narození *", ph_birth: "01.01.1985", err_birth: "Formát: DD.MM.RRRR",
+    lbl_nationality: "Státní příslušnost *", ph_nationality: "česká", err_nationality: "Vyplňte státní příslušnost",
+    lbl_phone: "Telefon *", ph_phone: "+420 777 000 000", err_phone: "Zadejte platné telefonní číslo",
+    lbl_email: "E-mail *", err_email: "Zadejte platný e-mail",
+    form_address: "Adresa bydliště",
+    lbl_street: "Ulice a číslo *", ph_street: "Novákova 1", err_street: "Vyplňte ulici a číslo",
+    lbl_city: "Město *", ph_city: "Praha", err_city: "Vyplňte město",
+    lbl_zip: "PSČ *", ph_zip: "110 00", err_zip: "Vyplňte PSČ",
+    lbl_country: "Stát *", ph_country: "Česká republika", err_country: "Vyplňte stát",
+    form_business: "Podnikání",
+    lbl_company: "Název firmy / OSVČ jméno *", ph_company: "Jan Novák — stavební práce", err_company: "Vyplňte název firmy nebo jméno",
+    lbl_biztype: "Typ podnikání *",
+    lbl_field: "Obor *", ph_field: "stavebnictví, montáž, instalace...", err_field: "Vyplňte obor podnikání",
+    form_tax: "Daňové údaje",
+    lbl_dic: "DIČ (pokud máš)", ph_dic: "CZ1234567890",
+    lbl_steuernr: "Steuernummer (pokud máš)", ph_steuernr: "nechej prázdné pokud nemáš",
+    lbl_has_freistellung: "Máš už Freistellung?", opt_no: "Ne", opt_yes: "Ano",
+    form_work: "Práce v Německu",
+    lbl_since: "Od kdy pracuješ v Německu *", ph_since: "01.01.2024", err_since: "Vyplňte datum",
+    lbl_duration: "Předpokládaná doba práce *", ph_duration: "6 měsíců", err_duration: "Vyplňte dobu práce",
+    lbl_location: "Kde pracuješ (město / region) *", ph_location: "Berlin, Bayern, München...", err_location: "Vyplňte místo práce",
+    form_orders: "Zakázky v Německu",
+    ord_company: "Název firmy (odběratel)", ord_company_ph: "Muster GmbH",
+    ord_address: "Adresa firmy", ord_address_ph: "Musterstraße 1, Berlin",
+    ord_site: "Místo stavby (pokud jiné)", ord_site_ph: "pokud jiné než adresa firmy",
+    ord_duration: "Přibližná doba trvání", ord_duration_ph: "3 měsíce",
+    btn_add_order: "+ Přidat další zakázku",
+    btn_continue: "Pokračovat k výběru služby →",
+    form_uploads: "Přílohy",
+    uploads_desc: "Nahrajte dokumenty potřebné pro vyřízení žádosti.",
+    upload_zivnostak_label: "Živnostenský list",
+    upload_smlouva_label: "Smlouva / objednávka",
+    upload_hint: "PDF, JPG nebo PNG, max. 10 MB",
+    upload_choose: "Vybrat soubor",
+    upload_none: "Žádný soubor nevybrán",
+    pay_step: "Krok 2 — Vyberte typ služby a zaplaťte",
+    pc1_badge: "Doporučeno",
+    pc1_name: "Kompletní vyřízení", pc1_info: "Podání + komunikace s úřadem do úplného schválení.",
+    pc2_name: "Podání", pc2_info: "Připravíme a odešleme žádost na Finanzamt.",
+    pc3_name: "Komplet se Steuernummer", pc3_info: "Vyřídíme Steuernummer i Freistellung za vás.",
+    rozdil: "<strong>Kompletní vyřízení vs. Podání:</strong> Finanzamt může vyžadovat doplnění informací. Při kompletním vyřízení veškerou komunikaci řešíme za vás až do schválení.",
+    btn_card: "💳 Zaplatit kartou",
+    btn_transfer: "🏦 Bankovní převod",
+    bank_title: "Platba bankovním převodem",
+    bank_body: "Číslo účtu: <strong>DOPLŇTE ČÍSLO ÚČTU</strong><br>Variabilní symbol: pošleme e-mailem po odeslání formuláře<br>Po přijetí platby začínáme zpracovávat do 24 hodin.",
+    success_msg: "<strong>Formulář byl úspěšně odeslán!</strong><br>Do 24 hodin vás kontaktujeme na uvedený e-mail nebo telefon s dalšími kroky. Děkujeme za důvěru.",
+    sidebar_title: "Co dostanete",
+    sf1_title: "Podání do 24 hodin", sf1_desc: "Okamžitě po přijetí platby",
+    sf2_title: "Komunikace česky", sf2_desc: "Žádná němčina ani angličtina",
+    sf3_title: "Kompletní vyřízení", sf3_desc: "Komunikujeme s úřadem za vás",
+    sf4_title: "Dokument e-mailem", sf4_desc: "Po schválení dostanete Freistellung",
+    sidebar_alert_t: "⚠ Proč to řešit hned?",
+    sidebar_alert_d: "Každá faktura bez Freistellung = 15&nbsp;% stržených. Při faktuře 10&nbsp;000&nbsp;€ přijdete o 1&nbsp;500&nbsp;€.",
+    about_label: "O nás",
+    about_title: "Člověk, který ví, jak na to",
+    about_p1: "Sám pracuji v Německu a vím, jak složité může být řešit úřady, papíry a cizí jazyk. Když jsem poprvé řešil Freistellung, platil jsem více a čekal 4 měsíce. Proto jsem vytvořil tuto službu, která pomáhá lidem jako jsem já — pracujícím v Německu, kteří chtějí mít vše vyřešené jednoduše a bez stresu.",
+    about_p2: "Pomáhám s administrativním podáním žádosti o Freistellung a dalšími potřebnými kroky, aby ses mohl soustředit na práci, ne na papírování. Komunikace je rychlá, lidská a bez zbytečných složitostí.",
+    about_role: "Zakladatel · Freistellung Express · IČO 09814850",
+    contact_label: "Kontakt",
+    contact_title: "Máte otázku?",
+    contact_desc: "Rádi odpovíme na veškeré dotazy ohledně Freistellung, daňového čísla nebo procesu podání. Odpovídáme zpravidla do hodiny.",
+    cc_email_label: "E-mail",
+    cc_wa_label: "WhatsApp",
+    faq_label: "Časté dotazy",
+    faq1_q: "Co je Freistellungsbescheinigung?",
+    faq1_a: "Je to osvědčení od německého finančního úřadu (Finanzamt), které potvrzuje, že váš odběratel nemusí srážet 15 % z vašich faktur dle §48b EStG.",
+    faq2_q: "Kdo Freistellung potřebuje?",
+    faq2_a: "Každý, kdo fakturuje za stavební nebo montážní práce v Německu jako OSVČ nebo firma. Týká se to české i slovenské OSVČ pracující pro německé zákazníky.",
+    faq3_q: "Jak dlouho platí Freistellung?",
+    faq3_a: "Závisí na rozhodnutí německého finančního úřadu (Finanzamt). Standardně se vydává na 1–3 roky.",
+    faq4_q: "Potřebuji Steuernummer?",
+    faq4_a: "Ano, německé daňové číslo (Steuernummer) je podmínkou pro vydání Freistellung. Pokud ho nemáte, nabízíme balíček včetně jeho vyřízení za 120 €.",
+    footer_terms: "Obchodní podmínky",
+    footer_contact: "Kontakt",
+    modal_title: "Obchodní podmínky",
+    modal_s1_t: "1. Identifikace poskytovatele",
+    modal_s1_b: "Miroslav Jaroš · IČO: 09814850 · Neuměřice 144, 273 26<br>E-mail: mira.jaros7@seznam.cz · Tel: +420 777 039 240",
+    modal_s2_t: "2. Předmět služby",
+    modal_s2_b: "Poskytovatel nabízí administrativní pomoc s přípravou a podáním žádosti o Freistellungsbescheinigung nach §48b EStG. Poskytovatel není daňovým poradcem ani právníkem.",
+    modal_s3_t: "3. Rozsah služby",
+    modal_s3_b: ["zpracování údajů dodaných klientem","příprava žádosti a odeslání na Finanzamt","u varianty Kompletní vyřízení: komunikace s úřadem do schválení"],
+    modal_s4_t: "4. Povinnosti klienta",
+    modal_s4_b: "Klient je povinen poskytnout pravdivé a úplné údaje. Za správnost zadaných informací nese odpovědnost klient.",
+    modal_s5_t: "5. Ceny a platba",
+    modal_s5_b: ["Kompletní vyřízení: 100 €","Podání: 80 €","Komplet se Steuernummer: 120 €"],
+    modal_s6_t: "6. Reklamace",
+    modal_s6_b: "Stížnosti řešíme individuálně do 5 pracovních dnů.",
+    modal_s7_t: "7. Ochrana osobních údajů",
+    modal_s7_b: "Osobní údaje jsou zpracovávány výhradně za účelem poskytnutí služby a nejsou předávány třetím stranám, s výjimkou příslušného německého Finanzamtu.",
+    modal_close: "Zavřít",
+    doc_title: "Freistellung Express",
+  },
+  en: {
+    nav_services: "Services",
+    nav_how: "How it works",
+    nav_about: "About",
+    nav_contact: "Contact",
+    nav_cta: "Fill out form →",
+    hero_kicker: "Freistellungsbescheinigung §48b EStG",
+    hero_h1: "We handle your Freistellung<br>within <span>24 hours</span>",
+    hero_sub: "No paperwork. No German. From your phone.",
+    hero_warning: "Without Freistellung, up to <b>15% can be deducted from your invoice</b> in Germany.",
+    hero_btn: "Fill out form →",
+    hero_card_label: "Why you need this",
+    stat1_label: "Average processing<br>time",
+    stat2_label: "Savings on every<br>invoice in Germany",
+    stat3_label: "EStG — legal<br>basis of request",
+    hero_card_alert: "<b>Without Freistellung</b>, the German client must deduct 15% from every invoice and pay it to the tax authority.",
+    proof1: "Processed within 24 hours",
+    proof2: "Communication in your language",
+    proof3: "Pay by card or bank transfer",
+    proof4: "Real experience working in Germany",
+    sec_services_label: "Services",
+    sec_services_title: "What we handle for you",
+    sec_services_desc: "We take care of all the paperwork — you focus on the work.",
+    svc1_name: "Application submission",
+    svc1_desc: "We prepare and submit the application to the relevant Finanzamt. Resubmission in case of rejection is not included.",
+    svc2_badge: "Most popular",
+    svc2_name: "Full processing",
+    svc2_desc: "We prepare and submit the application to the Finanzamt and handle all communication with the authority until full approval.",
+    svc3_name: "Full package with Steuernummer",
+    svc3_desc: "Don't have a German tax number (Steuernummer)? We'll obtain it for you as part of the package.",
+    sec_how_label: "How it works",
+    sec_how_title: "Three steps to your Freistellung",
+    sec_how_desc: "The entire process can be done from your phone in a few minutes.",
+    step1_title: "Fill in the form",
+    step1_desc: "Fill in a simple online form. No German documents or knowledge of German required.",
+    step2_title: "Choose and pay",
+    step2_desc: "Select the service type and pay by card or bank transfer. We start immediately after payment.",
+    step3_title: "Receive the document",
+    step3_desc: "We submit the application to the Finanzamt within 24 hours. After approval you receive the Freistellungsbescheinigung by email.",
+    form_label: "Form",
+    form_title: "Enter your details",
+    form_desc: "Fill in the form and we'll take care of the rest.",
+    form_basic: "Basic information",
+    lbl_name: "Full name *", ph_name: "John Smith", err_name: "Enter first and last name",
+    lbl_birth: "Date of birth *", ph_birth: "01.01.1985", err_birth: "Format: DD.MM.YYYY",
+    lbl_nationality: "Nationality *", ph_nationality: "Czech", err_nationality: "Enter nationality",
+    lbl_phone: "Phone *", ph_phone: "+420 777 000 000", err_phone: "Enter a valid phone number",
+    lbl_email: "E-mail *", err_email: "Enter a valid email",
+    form_address: "Home address",
+    lbl_street: "Street and number *", ph_street: "Main Street 1", err_street: "Enter street and number",
+    lbl_city: "City *", ph_city: "Prague", err_city: "Enter city",
+    lbl_zip: "Postal code *", ph_zip: "110 00", err_zip: "Enter postal code",
+    lbl_country: "Country *", ph_country: "Czech Republic", err_country: "Enter country",
+    form_business: "Business",
+    lbl_company: "Company / sole trader name *", ph_company: "John Smith — construction", err_company: "Enter company or name",
+    lbl_biztype: "Business type *",
+    lbl_field: "Industry *", ph_field: "construction, assembly, installation...", err_field: "Enter industry",
+    form_tax: "Tax details",
+    lbl_dic: "VAT number (if applicable)", ph_dic: "CZ1234567890",
+    lbl_steuernr: "Steuernummer (if you have one)", ph_steuernr: "leave blank if you don't have one",
+    lbl_has_freistellung: "Do you already have a Freistellung?", opt_no: "No", opt_yes: "Yes",
+    form_work: "Work in Germany",
+    lbl_since: "Working in Germany since *", ph_since: "01.01.2024", err_since: "Enter date",
+    lbl_duration: "Expected duration of work *", ph_duration: "6 months", err_duration: "Enter duration",
+    lbl_location: "Where you work (city / region) *", ph_location: "Berlin, Bayern, München...", err_location: "Enter work location",
+    form_orders: "Projects in Germany",
+    ord_company: "Client company name", ord_company_ph: "Muster GmbH",
+    ord_address: "Company address", ord_address_ph: "Musterstraße 1, Berlin",
+    ord_site: "Construction site (if different)", ord_site_ph: "if different from company address",
+    ord_duration: "Approximate duration", ord_duration_ph: "3 months",
+    btn_add_order: "+ Add another project",
+    btn_continue: "Continue to service selection →",
+    form_uploads: "Attachments",
+    uploads_desc: "Upload documents required for your application.",
+    upload_zivnostak_label: "Trade licence / Business registration",
+    upload_smlouva_label: "Contract / Order",
+    upload_hint: "PDF, JPG or PNG, max. 10 MB",
+    upload_choose: "Choose file",
+    upload_none: "No file selected",
+    pay_step: "Step 2 — Choose service and pay",
+    pc1_badge: "Recommended",
+    pc1_name: "Full processing", pc1_info: "Submission + authority communication until full approval.",
+    pc2_name: "Submission", pc2_info: "We prepare and submit the application to the Finanzamt.",
+    pc3_name: "Full package with Steuernummer", pc3_info: "We handle both Steuernummer and Freistellung for you.",
+    rozdil: "<strong>Full processing vs. Submission:</strong> The Finanzamt may request additional information. With full processing we handle all communication on your behalf until approval.",
+    btn_card: "💳 Pay by card",
+    btn_transfer: "🏦 Bank transfer",
+    bank_title: "Bank transfer payment",
+    bank_body: "Account number: <strong>FILL IN ACCOUNT NUMBER</strong><br>Variable symbol: we'll send it by email after form submission<br>We start processing within 24 hours of receiving payment.",
+    success_msg: "<strong>Form submitted successfully!</strong><br>We will contact you within 24 hours at the email or phone number provided with next steps. Thank you for your trust.",
+    sidebar_title: "What you get",
+    sf1_title: "Submission within 24 hours", sf1_desc: "Immediately after payment is received",
+    sf2_title: "Communication in your language", sf2_desc: "No German or English required",
+    sf3_title: "Full processing", sf3_desc: "We communicate with the authority for you",
+    sf4_title: "Document by email", sf4_desc: "You receive the Freistellung after approval",
+    sidebar_alert_t: "⚠ Why act now?",
+    sidebar_alert_d: "Every invoice without Freistellung = 15% deducted. On a €10,000 invoice you lose €1,500.",
+    about_label: "About",
+    about_title: "Someone who knows how it works",
+    about_p1: "I work in Germany myself and know how difficult it can be to deal with authorities, paperwork and a foreign language. When I first dealt with the Freistellung, I paid more and waited 4 months. That's why I created this service to help people like me — working in Germany who want everything handled simply and without stress.",
+    about_p2: "I help with the administrative submission of the Freistellung application and other necessary steps, so you can focus on work, not paperwork. Communication is fast, human and without unnecessary complications.",
+    about_role: "Founder · Freistellung Express · CRN 09814850",
+    contact_label: "Contact",
+    contact_title: "Have a question?",
+    contact_desc: "We're happy to answer any questions about Freistellung, tax number or the application process. We typically reply within an hour.",
+    cc_email_label: "Email",
+    cc_wa_label: "WhatsApp",
+    faq_label: "FAQ",
+    faq1_q: "What is Freistellungsbescheinigung?",
+    faq1_a: "It is a certificate from the German tax authority (Finanzamt) confirming that your client does not need to withhold 15% from your invoices under §48b EStG.",
+    faq2_q: "Who needs a Freistellung?",
+    faq2_a: "Anyone invoicing for construction or assembly work in Germany as a sole trader or company. This applies to Czech and Slovak sole traders working for German clients.",
+    faq3_q: "How long is the Freistellung valid?",
+    faq3_a: "It depends on the decision of the German tax authority (Finanzamt). Validity is typically 1–3 years.",
+    faq4_q: "Do I need a Steuernummer?",
+    faq4_a: "Yes, a German tax number (Steuernummer) is required to obtain a Freistellung. If you don't have one, we offer a package including its registration for €120.",
+    footer_terms: "Terms & Conditions",
+    footer_contact: "Contact",
+    modal_title: "Terms & Conditions",
+    modal_s1_t: "1. Provider identification",
+    modal_s1_b: "Miroslav Jaroš · CRN: 09814850 · Neuměřice 144, 273 26<br>Email: mira.jaros7@seznam.cz · Phone: +420 777 039 240",
+    modal_s2_t: "2. Service scope",
+    modal_s2_b: "The provider offers administrative assistance with the preparation and submission of the Freistellungsbescheinigung application under §48b EStG. The provider is not a tax advisor or lawyer.",
+    modal_s3_t: "3. Service scope",
+    modal_s3_b: ["processing of data provided by the client","preparation and submission of the application to the Finanzamt","for 'Full processing': communication with the authority until approval"],
+    modal_s4_t: "4. Client obligations",
+    modal_s4_b: "The client is required to provide accurate and complete information. The client is responsible for the accuracy of the submitted data.",
+    modal_s5_t: "5. Prices and payment",
+    modal_s5_b: ["Full processing: €100","Submission: €80","Full package with Steuernummer: €120"],
+    modal_s6_t: "6. Complaints",
+    modal_s6_b: "Complaints are handled individually within 5 working days.",
+    modal_s7_t: "7. Data protection",
+    modal_s7_b: "Personal data is processed solely for the purpose of providing the service and is not shared with third parties, except the relevant German Finanzamt.",
+    modal_close: "Close",
+    doc_title: "Freistellung Express",
+  },
+  de: {
+    nav_services: "Leistungen",
+    nav_how: "So funktioniert's",
+    nav_about: "Über uns",
+    nav_contact: "Kontakt",
+    nav_cta: "Formular ausfüllen →",
+    hero_kicker: "Freistellungsbescheinigung §48b EStG",
+    hero_h1: "Wir beantragen Ihre Freistellung<br>in <span>24 Stunden</span>",
+    hero_sub: "Kein Papierkram. Kein Deutsch nötig. Vom Handy aus.",
+    hero_warning: "Ohne Freistellung können bis zu <b>15% von Ihrer Rechnung</b> in Deutschland einbehalten werden.",
+    hero_btn: "Formular ausfüllen →",
+    hero_card_label: "Warum das wichtig ist",
+    stat1_label: "Durchschnittliche<br>Bearbeitungszeit",
+    stat2_label: "Ersparnis bei jeder<br>Rechnung in Deutschland",
+    stat3_label: "EStG — gesetzliche<br>Grundlage des Antrags",
+    hero_card_alert: "<b>Ohne Freistellung</b> muss der deutsche Auftraggeber 15% von jeder Rechnung einbehalten und an das Finanzamt abführen.",
+    proof1: "Bearbeitung innerhalb von 24 Stunden",
+    proof2: "Kommunikation auf Tschechisch",
+    proof3: "Zahlung per Karte oder Überweisung",
+    proof4: "Praxiserfahrung in Deutschland",
+    sec_services_label: "Leistungen",
+    sec_services_title: "Was wir für Sie erledigen",
+    sec_services_desc: "Wir kümmern uns um den gesamten Verwaltungsaufwand — Sie konzentrieren sich auf die Arbeit.",
+    svc1_name: "Antragstellung",
+    svc1_desc: "Wir bereiten den Antrag vor und senden ihn an das zuständige Finanzamt. Im Falle einer Ablehnung ist eine erneute Bearbeitung nicht im Preis enthalten.",
+    svc2_badge: "Am beliebtesten",
+    svc2_name: "Komplette Abwicklung",
+    svc2_desc: "Wir bereiten den Antrag vor und reichen ihn beim Finanzamt ein. Die gesamte Kommunikation mit der Behörde übernehmen wir bis zur vollständigen Genehmigung.",
+    svc3_name: "Komplett mit Steuernummer",
+    svc3_desc: "Haben Sie noch keine deutsche Steuernummer? Wir beantragen sie als Teil des Pakets für Sie.",
+    sec_how_label: "So funktioniert's",
+    sec_how_title: "Drei Schritte zu Ihrer Freistellung",
+    sec_how_desc: "Den gesamten Prozess können Sie in wenigen Minuten vom Handy aus erledigen.",
+    step1_title: "Formular ausfüllen",
+    step1_desc: "Füllen Sie ein einfaches Online-Formular aus. Sie benötigen keine deutschen Dokumente oder Deutschkenntnisse.",
+    step2_title: "Wählen und bezahlen",
+    step2_desc: "Wählen Sie den Leistungstyp und bezahlen Sie per Karte oder Überweisung. Nach Zahlungseingang beginnen wir sofort.",
+    step3_title: "Dokument erhalten",
+    step3_desc: "Wir reichen den Antrag beim Finanzamt innerhalb von 24 Stunden ein. Nach der Genehmigung erhalten Sie die Freistellungsbescheinigung per E-Mail.",
+    form_label: "Formular",
+    form_title: "Geben Sie Ihre Daten ein",
+    form_desc: "Füllen Sie das Formular aus und wir kümmern uns um den Rest.",
+    form_basic: "Grunddaten",
+    lbl_name: "Vor- und Nachname *", ph_name: "Max Mustermann", err_name: "Vor- und Nachname eingeben",
+    lbl_birth: "Geburtsdatum *", ph_birth: "01.01.1985", err_birth: "Format: TT.MM.JJJJ",
+    lbl_nationality: "Staatsangehörigkeit *", ph_nationality: "tschechisch", err_nationality: "Staatsangehörigkeit eingeben",
+    lbl_phone: "Telefon *", ph_phone: "+420 777 000 000", err_phone: "Gültige Telefonnummer eingeben",
+    lbl_email: "E-Mail *", err_email: "Gültige E-Mail eingeben",
+    form_address: "Wohnadresse",
+    lbl_street: "Straße und Hausnummer *", ph_street: "Musterstraße 1", err_street: "Straße und Hausnummer eingeben",
+    lbl_city: "Stadt *", ph_city: "Prag", err_city: "Stadt eingeben",
+    lbl_zip: "PLZ *", ph_zip: "110 00", err_zip: "PLZ eingeben",
+    lbl_country: "Land *", ph_country: "Tschechische Republik", err_country: "Land eingeben",
+    form_business: "Unternehmen",
+    lbl_company: "Firmenname / Selbstständigenname *", ph_company: "Max Mustermann — Bauarbeiten", err_company: "Firmennamen oder Namen eingeben",
+    lbl_biztype: "Art der Tätigkeit *",
+    lbl_field: "Branche *", ph_field: "Bauwesen, Montage, Installation...", err_field: "Branche eingeben",
+    form_tax: "Steuerdaten",
+    lbl_dic: "USt-IdNr. (falls vorhanden)", ph_dic: "CZ1234567890",
+    lbl_steuernr: "Steuernummer (falls vorhanden)", ph_steuernr: "leer lassen falls nicht vorhanden",
+    lbl_has_freistellung: "Haben Sie bereits eine Freistellung?", opt_no: "Nein", opt_yes: "Ja",
+    form_work: "Tätigkeit in Deutschland",
+    lbl_since: "Seit wann tätig in Deutschland *", ph_since: "01.01.2024", err_since: "Datum eingeben",
+    lbl_duration: "Voraussichtliche Dauer *", ph_duration: "6 Monate", err_duration: "Dauer eingeben",
+    lbl_location: "Tätigkeitsort (Stadt / Region) *", ph_location: "Berlin, Bayern, München...", err_location: "Tätigkeitsort eingeben",
+    form_orders: "Aufträge in Deutschland",
+    ord_company: "Name des Auftraggebers", ord_company_ph: "Muster GmbH",
+    ord_address: "Adresse des Unternehmens", ord_address_ph: "Musterstraße 1, Berlin",
+    ord_site: "Baustelle (falls abweichend)", ord_site_ph: "falls abweichend von Unternehmensadresse",
+    ord_duration: "Ungefähre Dauer", ord_duration_ph: "3 Monate",
+    btn_add_order: "+ Weiteren Auftrag hinzufügen",
+    btn_continue: "Weiter zur Leistungsauswahl →",
+    form_uploads: "Anhänge",
+    uploads_desc: "Laden Sie die für den Antrag benötigten Dokumente hoch.",
+    upload_zivnostak_label: "Gewerbeschein / Handelsregisterauszug",
+    upload_smlouva_label: "Vertrag / Bestellung",
+    upload_hint: "PDF, JPG oder PNG, max. 10 MB",
+    upload_choose: "Datei auswählen",
+    upload_none: "Keine Datei ausgewählt",
+    pay_step: "Schritt 2 — Leistung auswählen und bezahlen",
+    pc1_badge: "Empfohlen",
+    pc1_name: "Komplette Abwicklung", pc1_info: "Einreichung + Behördenkommunikation bis zur vollständigen Genehmigung.",
+    pc2_name: "Antragstellung", pc2_info: "Wir bereiten den Antrag vor und senden ihn an das Finanzamt.",
+    pc3_name: "Komplett mit Steuernummer", pc3_info: "Wir beantragen Steuernummer und Freistellung für Sie.",
+    rozdil: "<strong>Komplette Abwicklung vs. Antragstellung:</strong> Das Finanzamt kann Nachweise anfordern. Bei der kompletten Abwicklung übernehmen wir die gesamte Kommunikation bis zur Genehmigung.",
+    btn_card: "💳 Per Karte bezahlen",
+    btn_transfer: "🏦 Banküberweisung",
+    bank_title: "Zahlung per Banküberweisung",
+    bank_body: "Kontonummer: <strong>KONTONUMMER EINFÜGEN</strong><br>Verwendungszweck: senden wir per E-Mail nach Formularübermittlung<br>Nach Zahlungseingang beginnen wir innerhalb von 24 Stunden.",
+    success_msg: "<strong>Formular erfolgreich übermittelt!</strong><br>Wir melden uns innerhalb von 24 Stunden unter der angegebenen E-Mail oder Telefonnummer. Vielen Dank für Ihr Vertrauen.",
+    sidebar_title: "Was Sie erhalten",
+    sf1_title: "Einreichung in 24 Stunden", sf1_desc: "Sofort nach Zahlungseingang",
+    sf2_title: "Kommunikation auf Tschechisch", sf2_desc: "Kein Deutsch oder Englisch erforderlich",
+    sf3_title: "Komplette Abwicklung", sf3_desc: "Wir kommunizieren mit der Behörde für Sie",
+    sf4_title: "Dokument per E-Mail", sf4_desc: "Nach Genehmigung erhalten Sie die Freistellung",
+    sidebar_alert_t: "⚠ Warum sofort handeln?",
+    sidebar_alert_d: "Jede Rechnung ohne Freistellung = 15% Abzug. Bei einer Rechnung von 10.000 € verlieren Sie 1.500 €.",
+    about_label: "Über uns",
+    about_title: "Jemand, der weiß, wie es geht",
+    about_p1: "Ich arbeite selbst in Deutschland und weiß, wie schwierig es sein kann, mit Behörden, Papierkram und einer Fremdsprache umzugehen. Als ich zum ersten Mal die Freistellung beantragt habe, habe ich mehr bezahlt und 4 Monate gewartet. Deshalb habe ich diesen Service geschaffen, der Menschen wie mir hilft — die in Deutschland arbeiten und alles einfach und stressfrei erledigt haben möchten.",
+    about_p2: "Ich helfe bei der administrativen Einreichung des Freistellungsantrags und weiteren notwendigen Schritten, damit Sie sich auf die Arbeit konzentrieren können, nicht auf Papierkram. Die Kommunikation ist schnell, menschlich und unkompliziert.",
+    about_role: "Gründer · Freistellung Express · Steuernr. 09814850",
+    contact_label: "Kontakt",
+    contact_title: "Haben Sie Fragen?",
+    contact_desc: "Wir beantworten gerne alle Fragen zur Freistellung, Steuernummer oder zum Antragsverfahren. Wir antworten in der Regel innerhalb einer Stunde.",
+    cc_email_label: "E-Mail",
+    cc_wa_label: "WhatsApp",
+    faq_label: "Häufige Fragen",
+    faq1_q: "Was ist eine Freistellungsbescheinigung?",
+    faq1_a: "Es ist eine Bescheinigung des deutschen Finanzamts, die bestätigt, dass Ihr Auftraggeber keine 15% von Ihren Rechnungen gemäß §48b EStG einbehalten muss.",
+    faq2_q: "Wer braucht eine Freistellung?",
+    faq2_a: "Jeder, der als Selbstständiger oder Unternehmen Rechnungen für Bau- oder Montageleistungen in Deutschland stellt. Dies gilt für tschechische und slowakische Selbstständige, die für deutsche Auftraggeber tätig sind.",
+    faq3_q: "Wie lange ist die Freistellung gültig?",
+    faq3_a: "Das hängt von der Entscheidung des Finanzamts ab. In der Regel wird sie für 1–3 Jahre ausgestellt.",
+    faq4_q: "Benötige ich eine Steuernummer?",
+    faq4_a: "Ja, eine deutsche Steuernummer ist Voraussetzung für die Freistellung. Falls Sie keine haben, bieten wir ein Paket inklusive Beantragung für 120 € an.",
+    footer_terms: "AGB",
+    footer_contact: "Kontakt",
+    modal_title: "Allgemeine Geschäftsbedingungen",
+    modal_s1_t: "1. Anbieteridentifikation",
+    modal_s1_b: "Miroslav Jaroš · Steuernr.: 09814850 · Neuměřice 144, 273 26<br>E-Mail: mira.jaros7@seznam.cz · Tel: +420 777 039 240",
+    modal_s2_t: "2. Leistungsgegenstand",
+    modal_s2_b: "Der Anbieter bietet administrative Unterstützung bei der Vorbereitung und Einreichung des Antrags auf Freistellungsbescheinigung nach §48b EStG. Der Anbieter ist kein Steuerberater oder Rechtsanwalt.",
+    modal_s3_t: "3. Leistungsumfang",
+    modal_s3_b: ["Verarbeitung der vom Kunden bereitgestellten Daten","Vorbereitung und Übermittlung des Antrags an das Finanzamt","bei Option 'Komplette Abwicklung': Kommunikation mit der Behörde bis zur Genehmigung"],
+    modal_s4_t: "4. Kundenpflichten",
+    modal_s4_b: "Der Kunde ist verpflichtet, wahrheitsgemäße und vollständige Angaben zu machen. Der Kunde trägt die Verantwortung für die Richtigkeit der übermittelten Daten.",
+    modal_s5_t: "5. Preise und Zahlung",
+    modal_s5_b: ["Komplette Abwicklung: 100 €","Antragstellung: 80 €","Komplett mit Steuernummer: 120 €"],
+    modal_s6_t: "6. Beschwerden",
+    modal_s6_b: "Beschwerden werden individuell innerhalb von 5 Werktagen bearbeitet.",
+    modal_s7_t: "7. Datenschutz",
+    modal_s7_b: "Personenbezogene Daten werden ausschließlich zum Zweck der Leistungserbringung verarbeitet und nicht an Dritte weitergegeben, mit Ausnahme des zuständigen deutschen Finanzamts.",
+    modal_close: "Schließen",
+    doc_title: "Freistellung Express",
+  }
+};
+
+let currentLang = localStorage.getItem('fe_lang') || 'cs';
+
+function t(key) {
+  return TRANSLATIONS[currentLang][key] || TRANSLATIONS['cs'][key] || key;
+}
+
+function applyTranslations(lang) {
+  currentLang = lang;
+  localStorage.setItem('fe_lang', lang);
+  document.documentElement.lang = lang;
+  document.title = t('doc_title');
+
+  // Safe setter helpers
+  function setText(id, val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+  function setHTML(id, val){ const el=document.getElementById(id); if(el) el.innerHTML=val; }
+
+  // Nav
+  setText('nav-services', t('nav_services'));
+  setText('nav-how', t('nav_how'));
+  setText('nav-about', t('nav_about'));
+  setText('nav-contact', t('nav_contact'));
+  setText('nav-cta', t('nav_cta'));
+  setText('nav-cta-m', t('nav_cta'));
+
+  // Hero
+  setText('hero-kicker', t('hero_kicker'));
+  setHTML('hero-h1', t('hero_h1'));
+  setText('hero-sub', t('hero_sub'));
+  setHTML('hero-warning', t('hero_warning'));
+  setText('hero-btn', t('hero_btn'));
+  setText('hero-card-label', t('hero_card_label'));
+  setHTML('stat1-label', t('stat1_label'));
+  setHTML('stat2-label', t('stat2_label'));
+  setHTML('stat3-label', t('stat3_label'));
+  setHTML('hero-card-alert', t('hero_card_alert'));
+
+  // Proof bar
+  setText('proof1', t('proof1'));
+  setText('proof2', t('proof2'));
+  setText('proof3', t('proof3'));
+  setText('proof4', t('proof4'));
+
+  // Services
+  setText('sec-services-label', t('sec_services_label'));
+  setText('sec-services-title', t('sec_services_title'));
+  setText('sec-services-desc', t('sec_services_desc'));
+  setText('svc1-name', t('svc1_name'));
+  setText('svc1-desc', t('svc1_desc'));
+  setText('svc2-badge', t('svc2_badge'));
+  setText('svc2-name', t('svc2_name'));
+  setText('svc2-desc', t('svc2_desc'));
+  setText('svc3-name', t('svc3_name'));
+  setText('svc3-desc', t('svc3_desc'));
+
+  // How it works
+  setText('sec-how-label', t('sec_how_label'));
+  setText('sec-how-title', t('sec_how_title'));
+  setText('sec-how-desc', t('sec_how_desc'));
+  setText('step1-title', t('step1_title'));
+  setText('step1-desc', t('step1_desc'));
+  setText('step2-title', t('step2_title'));
+  setText('step2-desc', t('step2_desc'));
+  setText('step3-title', t('step3_title'));
+  setText('step3-desc', t('step3_desc'));
+
+  // Form
+  setText('form-label', t('form_label'));
+  setText('form-title', t('form_title'));
+  setText('form-desc', t('form_desc'));
+  setText('form-basic', t('form_basic'));
+  setLabel('jmeno', t('lbl_name'), t('ph_name'), t('err_name'));
+  setLabel('narozeni', t('lbl_birth'), t('ph_birth'), t('err_birth'));
+  setLabel('statni', t('lbl_nationality'), t('ph_nationality'), t('err_nationality'));
+  setLabel('telefon', t('lbl_phone'), t('ph_phone'), t('err_phone'));
+  setLabel('email', t('lbl_email'), 'vas@email.cz', t('err_email'));
+  setText('form-address', t('form_address'));
+  setLabel('ulice', t('lbl_street'), t('ph_street'), t('err_street'));
+  setLabel('mesto', t('lbl_city'), t('ph_city'), t('err_city'));
+  setLabel('psc', t('lbl_zip'), t('ph_zip'), t('err_zip'));
+  setLabel('stat', t('lbl_country'), t('ph_country'), t('err_country'));
+  setText('form-business', t('form_business'));
+  setLabel('firma', t('lbl_company'), t('ph_company'), t('err_company'));
+  setText('biztype-label', t('lbl_biztype'));
+  setLabel('obor', t('lbl_field'), t('ph_field'), t('err_field'));
+  setText('form-tax', t('form_tax'));
+  setLabel('dic', t('lbl_dic'), t('ph_dic'), '');
+  setLabel('steuernr', t('lbl_steuernr'), t('ph_steuernr'), '');
+  setText('fg-has-freistellung-label', t('lbl_has_freistellung'));
+  setText('opt-no', t('opt_no'));
+  setText('opt-yes', t('opt_yes'));
+  setText('form-work', t('form_work'));
+  setLabel('od-kdy', t('lbl_since'), t('ph_since'), t('err_since'));
+  setLabel('jak-dlouho', t('lbl_duration'), t('ph_duration'), t('err_duration'));
+  setLabel('kde-pracuje', t('lbl_location'), t('ph_location'), t('err_location'));
+  setText('form-orders', t('form_orders'));
+  setText('btn-add-order', t('btn_add_order'));
+  setText('btn-continue', t('btn_continue'));
+  setText('form-uploads', t('form_uploads'));
+  setText('uploads-desc', t('uploads_desc'));
+  setText('upload-zivnostak-label', t('upload_zivnostak_label'));
+  setText('upload-smlouva-label', t('upload_smlouva_label'));
+  setText('upload-hint-1', t('upload_hint'));
+  setText('upload-hint-2', t('upload_hint'));
+  const zBtn = document.getElementById('upload-zivnostak-btn');
+  const sBtn = document.getElementById('upload-smlouva-btn');
+  const zInput = document.getElementById('input-zivnostak');
+  const sInput = document.getElementById('input-smlouva');
+  if(zBtn && zInput && !zInput.files.length) zBtn.textContent = t('upload_choose');
+  if(sBtn && sInput && !sInput.files.length) sBtn.textContent = t('upload_choose');
+
+  // Payment
+  setText('pay-step', t('pay_step'));
+  setText('pc1-badge', t('pc1_badge'));
+  setText('pc1-name', t('pc1_name'));
+  setText('pc1-info', t('pc1_info'));
+  setText('pc2-name', t('pc2_name'));
+  setText('pc2-info', t('pc2_info'));
+  setText('pc3-name', t('pc3_name'));
+  setText('pc3-info', t('pc3_info'));
+  setHTML('rozdil-info', t('rozdil'));
+  setText('btn-card', t('btn_card'));
+  setText('btn-transfer', t('btn_transfer'));
+  setText('bank-title', t('bank_title'));
+  setHTML('bank-body', t('bank_body'));
+  setHTML('success-text', t('success_msg'));
+
+  // Sidebar
+  setText('sidebar-title', t('sidebar_title'));
+  setText('sf1-title', t('sf1_title'));
+  setText('sf1-desc', t('sf1_desc'));
+  setText('sf2-title', t('sf2_title'));
+  setText('sf2-desc', t('sf2_desc'));
+  setText('sf3-title', t('sf3_title'));
+  setText('sf3-desc', t('sf3_desc'));
+  setText('sf4-title', t('sf4_title'));
+  setText('sf4-desc', t('sf4_desc'));
+  setText('sidebar-alert-t', t('sidebar_alert_t'));
+  setHTML('sidebar-alert-d', t('sidebar_alert_d'));
+
+  // About
+  setText('about-label', t('about_label'));
+  setText('about-title', t('about_title'));
+  setText('about-p1', t('about_p1'));
+  setText('about-p2', t('about_p2'));
+  setText('about-role', t('about_role'));
+
+  // Contact & FAQ
+  setText('contact-label', t('contact_label'));
+  setText('contact-title', t('contact_title'));
+  setText('contact-desc', t('contact_desc'));
+  setText('cc-email-label', t('cc_email_label'));
+  setText('cc-wa-label', t('cc_wa_label'));
+  setText('faq-label', t('faq_label'));
+  setText('faq1-q-text', t('faq1_q'));
+  setText('faq1-a', t('faq1_a'));
+  setText('faq2-q-text', t('faq2_q'));
+  setText('faq2-a', t('faq2_a'));
+  setText('faq3-q-text', t('faq3_q'));
+  setText('faq3-a', t('faq3_a'));
+  setText('faq4-q-text', t('faq4_q'));
+  setText('faq4-a', t('faq4_a'));
+
+  // Footer & modal
+  setText('footer-terms', t('footer_terms'));
+  setText('footer-contact-link', t('footer_contact'));
+  setText('modal-title', t('modal_title'));
+  setText('modal-s1-t', t('modal_s1_t'));
+  setHTML('modal-s1-b', t('modal_s1_b'));
+  setText('modal-s2-t', t('modal_s2_t'));
+  setText('modal-s2-b', t('modal_s2_b'));
+  setText('modal-s3-t', t('modal_s3_t'));
+  const s3list = document.getElementById('modal-s3-list');
+  if(s3list) s3list.innerHTML = t('modal_s3_b').map(i=>`<li>${i}</li>`).join('');
+  setText('modal-s4-t', t('modal_s4_t'));
+  setText('modal-s4-b', t('modal_s4_b'));
+  setText('modal-s5-t', t('modal_s5_t'));
+  const s5list = document.getElementById('modal-s5-list');
+  if(s5list) s5list.innerHTML = t('modal_s5_b').map(i=>`<li>${i}</li>`).join('');
+  setText('modal-s6-t', t('modal_s6_t'));
+  setText('modal-s6-b', t('modal_s6_b'));
+  setText('modal-s7-t', t('modal_s7_t'));
+  setText('modal-s7-b', t('modal_s7_b'));
+  setText('modal-close-btn', t('modal_close'));
+  setText('modal-close-btn2', t('modal_close'));
+
+  // Mobile nav
+  setText('mob-services', t('nav_services'));
+  setText('mob-how', t('nav_how'));
+  setText('mob-about', t('nav_about'));
+  setText('mob-contact', t('nav_contact'));
+
+  // Dropdown trigger flag + code
+  const flagSVGs = {
+    cs: `<svg width="20" height="14" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" rx="2" fill="#D7141A"/><rect width="20" height="7" fill="#fff"/><polygon points="0,0 9,7 0,14" fill="#11457E"/></svg>`,
+    en: `<svg width="20" height="14" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="40" rx="3" fill="#012169"/><path d="M0 0 L60 40 M60 0 L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0 L60 40 M60 0 L0 40" stroke="#C8102E" stroke-width="5"/><path d="M30 0 V40 M0 20 H60" stroke="#fff" stroke-width="13"/><path d="M30 0 V40 M0 20 H60" stroke="#C8102E" stroke-width="8"/></svg>`,
+    de: `<svg width="20" height="14" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" rx="2" fill="#FFCE00"/><rect width="20" height="9.33" fill="#DD0000"/><rect width="20" height="4.67" fill="#000"/></svg>`
+  };
+  const tf = document.getElementById('trigger-flag');
+  const tc = document.getElementById('trigger-code');
+  if(tf) tf.innerHTML = flagSVGs[lang];
+  if(tc) tc.textContent = {cs:'CZ',en:'EN',de:'DE'}[lang];
+  document.querySelectorAll('.lang-option').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
+}
+
+function setLabel(fieldId, labelText, placeholder, errText) {
+  const fg = document.getElementById('fg-' + fieldId);
+  if (!fg) return;
+  const lbl = fg.querySelector('label'); if(lbl) lbl.textContent = labelText;
+  const inp = fg.querySelector('input,select'); if(inp && placeholder) inp.placeholder = placeholder;
+  const err = fg.querySelector('.err-msg'); if(err && errText) err.textContent = errText;
+}
+
 function openMobileMenu(){document.getElementById('mobileMenu').classList.add('open')}
 function closeMobileMenu(){document.getElementById('mobileMenu').classList.remove('open')}
 function toggleFaq(el){el.closest('.faq-item').classList.toggle('open')}
@@ -508,8 +1223,10 @@ function vyberSluzbu(el,sluzba,cena){
 function pridatZakazku(){
   pocetZakazek++;
   const id='zakazka-'+pocetZakazek,div=document.createElement('div');
+  const lang=currentLang;
+  const T=TRANSLATIONS[lang];
   div.className='zakazka-block';div.id=id;
-  div.innerHTML=`<button class="remove-btn" type="button" onclick="odebratZakazku('${id}')">&#x00D7;</button><div class="fg-group"><div class="fg"><label>Název firmy (odběratel)</label><input type="text" placeholder="Muster GmbH" class="zak-firma"></div><div class="fg"><label>Adresa firmy</label><input type="text" placeholder="Musterstraße 1, Berlin" class="zak-adresa"></div><div class="fg"><label>Místo stavby</label><input type="text" placeholder="pokud jiné než adresa firmy" class="zak-misto"></div><div class="fg"><label>Doba trvání</label><input type="text" placeholder="3 měsíce" class="zak-doba"></div></div>`;
+  div.innerHTML=`<button class="remove-btn" type="button" onclick="odebratZakazku('${id}')">&#x00D7;</button><div class="fg-group"><div class="fg"><label>${T.ord_company||'Název firmy'}</label><input type="text" placeholder="${T.ord_company_ph||'Muster GmbH'}" class="zak-firma"></div><div class="fg"><label>${T.ord_address||'Adresa firmy'}</label><input type="text" placeholder="${T.ord_address_ph||'Musterstraße 1, Berlin'}" class="zak-adresa"></div><div class="fg"><label>${T.ord_site||'Místo stavby'}</label><input type="text" placeholder="${T.ord_site_ph||'-'}" class="zak-misto"></div><div class="fg"><label>${T.ord_duration||'Doba trvání'}</label><input type="text" placeholder="${T.ord_duration_ph||'3 měsíce'}" class="zak-doba"></div></div>`;
   document.getElementById('zakazky-container').appendChild(div);
 }
 function odebratZakazku(id){const el=document.getElementById(id);if(el)el.remove();}
@@ -520,7 +1237,7 @@ function sebratData(){
     if(f||a)zakazky.push(`Firma: ${f} | Adresa: ${a} | Misto: ${m||'-'} | Doba: ${d||'-'}`);
   });
   const nazev=vybranaSluzba==='vyrizeni'?'Kompletni vyrizeni (100 EUR)':vybranaSluzba==='podani'?'Podani (80 EUR)':'Komplet se Steuernummer (120 EUR)';
-  return{'VYBRANA SLUZBA':nazev,'Jmeno':document.getElementById('jmeno').value,'Narozeni':document.getElementById('narozeni').value,'Statni':document.getElementById('statni').value,'Telefon':document.getElementById('telefon').value,'Email':document.getElementById('email').value,'Ulice':document.getElementById('ulice').value,'Mesto':document.getElementById('mesto').value,'PSC':document.getElementById('psc').value,'Stat':document.getElementById('stat').value,'Firma':document.getElementById('firma').value,'Typ podnikani':document.getElementById('typ-podnikani').value,'Obor':document.getElementById('obor').value,'DIC':document.getElementById('dic').value||'-','Steuernummer':document.getElementById('steuernummer').value||'-','Ma Freistellung':document.getElementById('ma-freistellung').value,'Pracuje v DE od':document.getElementById('od-kdy').value,'Delka prace':document.getElementById('jak-dlouho').value,'Misto prace':document.getElementById('kde-pracuje').value,'Zakazky':zakazky.join('\n')||'-'};
+  return{'VYBRANA SLUZBA':nazev,'Jazyk':currentLang,'Jmeno':document.getElementById('jmeno').value,'Narozeni':document.getElementById('narozeni').value,'Statni':document.getElementById('statni').value,'Telefon':document.getElementById('telefon').value,'Email':document.getElementById('email').value,'Ulice':document.getElementById('ulice').value,'Mesto':document.getElementById('mesto').value,'PSC':document.getElementById('psc').value,'Stat':document.getElementById('stat').value,'Firma':document.getElementById('firma').value,'Typ podnikani':document.getElementById('typ-podnikani').value,'Obor':document.getElementById('obor').value,'DIC':document.getElementById('dic').value||'-','Steuernummer':document.getElementById('steuernummer').value||'-','Ma Freistellung':document.getElementById('ma-freistellung').value,'Pracuje v DE od':document.getElementById('od-kdy').value,'Delka prace':document.getElementById('jak-dlouho').value,'Misto prace':document.getElementById('kde-pracuje').value,'Zakazky':zakazky.join('\n')||'-'};
 }
 async function odeslatFormspree(){
   if(formularOdeslan)return true;
@@ -538,10 +1255,54 @@ function zpracovatPlatbu(){
   odeslatFormspree().then(ok=>{
     if(ok)document.getElementById('success-msg').classList.add('show');
     const link=links[vybranaSluzba];
-    if(link.includes('LINK_')){alert('Platba kartou bude brzy dostupná.\n\nMezitím nás kontaktujte:\nEmail: mira.jaros7@seznam.cz\nWhatsApp: +420 777 039 240');}
+    if(link.includes('LINK_')){alert('...');}
     else{window.location.href=link;}
   });
 }
+
+function handleUpload(input, itemId, nameId, btnId){
+  const file = input.files[0];
+  const item = document.getElementById(itemId);
+  const nameEl = document.getElementById(nameId);
+  const btn = document.getElementById(btnId);
+  if(file){
+    item.classList.add('has-file');
+    nameEl.textContent = file.name;
+    btn.textContent = t('upload_choose');
+  } else {
+    item.classList.remove('has-file');
+    nameEl.textContent = '';
+    btn.textContent = t('upload_choose');
+  }
+}
+function toggleLangDropdown(e){
+  e.stopPropagation();
+  document.getElementById('lang-switcher').classList.toggle('open');
+}
+function switchLang(lang){
+  applyTranslations(lang);
+  document.querySelectorAll('.mobile-lang .lang-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang===lang);
+  });
+  document.querySelectorAll('.lang-option').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang===lang);
+  });
+  document.getElementById('lang-switcher').classList.remove('open');
+}
+document.addEventListener('click', function(e){
+  const sw=document.getElementById('lang-switcher');
+  if(sw && !sw.contains(e.target)) sw.classList.remove('open');
+});
+
+// Init language on load — auto-detect browser language, fallback to cs
+document.addEventListener('DOMContentLoaded', function() {
+  let saved = localStorage.getItem('fe_lang');
+  if (!saved) {
+    const browserLang = navigator.language.slice(0, 2);
+    saved = ['cs','en','de'].includes(browserLang) ? browserLang : 'cs';
+  }
+  switchLang(saved);
+});
 </script>
 </body>
 </html>
