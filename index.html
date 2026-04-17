@@ -1394,12 +1394,24 @@ function zobrazBankovniPrevod(){
   if(!visible)odeslatFormspree().then(ok=>{if(ok)document.getElementById('success-msg').classList.add('show');});
 }
 function zpracovatPlatbu(){
-  const links={'vyrizeni':'https://buy.stripe.com/test_3cI7sL3XI5kf0rgdv74Ni02','podani':'https://buy.stripe.com/test_5kQeVd3XIbIDei68aN4Ni01','steuernummer':'https://buy.stripe.com/test_9B64gz9i25kfa1Q62F4Ni00'};
-  odeslatFormspree().then(ok=>{
-    if(ok)document.getElementById('success-msg').classList.add('show');
-    const link=links[vybranaSluzba];
-    if(link.includes('LINK_')){alert('...');}
-    else{window.location.href=link;}
+  const links = {
+    'vyrizeni': 'https://buy.stripe.com/5kQ00j1P21dP5Ywbrv3sI01', 
+    'podani': 'https://buy.stripe.com/fZufZhdxK3lXaeM0MR3sI00',
+    'steuernummer': 'https://buy.stripe.com/14A28r0KY8Ghfz61QV3sI02'
+  };
+
+  odeslatFormspree().then(ok => {
+    if(ok) {
+      document.getElementById('success-msg').classList.add('show');
+    }
+    
+    let link = links[vybranaSluzba];
+    const email = document.getElementById('email').value;
+    
+    if (email) {
+      link += '?prefilled_email=' + encodeURIComponent(email);
+    }
+    window.location.href = link;
   });
 }
 
