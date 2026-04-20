@@ -1,46 +1,49 @@
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  const rawBody = await request.text();
-  const sigHeader = request.headers.get('stripe-signature') || '';
+  const formData = await request.formData();
 
-  const valid = await verifyStripeSignature(
-    rawBody,
-    sigHeader,
-    env.STRIPE_WEBHOOK_SECRET
-  );
+  const email = formData.get("Email") || "";
+  const name = formData.get("Jmeno") || "";
+  const service = formData.get("VYBRANA SLUZBA") || "80";
 
-  if (!valid) {
-    return new Response('Invalid signature', { status: 400 });
+  let amount = 8000;
+  let serviceName = "Podání žádosti (80 €)";
+
+  if (service === "100") {
+    amount = 10000;
+    serviceName = "Kompletní vyřízení (100 €)";
   }
 
-  const event = JSON.parse(rawBody);
-
-  if (
-    event.type === 'checkout.session.completed' ||
-    event.type === 'checkout.session.async_payment_succeeded'
-  ) {
-    const session = event.data.object;
-
-    const mail = buildConfirmationEmail(session);
-
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Freistellung Express <noreply@freistellung-express.com>',
-        to: [mail.to],
-        subject: mail.subject,
-        html: mail.html,
-      }),
-    });
+  if (service === "120") {
+    amount = 12000;
+    serviceName = "Komplet se Steuernummer (120 €)";
   }
 
-  return new Response(JSON.stringify({ received: true }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
+  const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${env.STRIPE_SECRET_KEY}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      mode: "payment",
+      success_url: "https://freistellung-express.com/dekujeme",
+      cancel_url: "https://freistellung-express.com/zruseno",
+      customer_email: email,
+
+      "metadata[name]": name,
+      "metadata[email]": email,
+      "metadata[service]": serviceName,
+
+      "line_items[0][price_data][currency]": "eur",
+      "line_items[0][price_data][product_data][name]": serviceName,
+      "line_items[0][price_data][unit_amount]": amount,
+      "line_items[0][quantity]": "1",
+    }),
   });
+
+  const session = await stripeRes.json();
+
+  return Response.redirect(session.url, 303);
 }
