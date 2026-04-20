@@ -13,87 +13,53 @@ async function verifyStripeSignature(rawBody, sigHeader, secret) {
     false,
     ['sign']
   );
-  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`${t}.${rawBody}`));
-  const computed = Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+  const sig = await crypto.subtle.sign(
+    'HMAC',
+    key,
+    new TextEncoder().encode(`${t}.${rawBody}`)
+  );
+
+  const computed = Array.from(new Uint8Array(sig))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
 
   return computed === v1;
 }
 
-function serviceFromAmount(amountTotal) {
-  const eur = amountTotal / 100;
-  if (eur <= 85)       return { name: 'Podání žádosti (80 €)',                    desc: 'Připravíme a odešleme žádost o Freistellung na Finanzamt.' };
-  if (eur <= 105)      return { name: 'Kompletní vyřízení (100 €)',               desc: 'Podání + komunikace s úřadem až do úplného schválení.' };
-  return               { name: 'Komplet se Steuernummer (120 €)',                 desc: 'Podáme žádost o Steuernummer i Freistellung za vás.' };
-}
-
+// 🎯 EMAIL BUILDER (už používá metadata)
 function buildConfirmationEmail(session) {
-  const name    = session.customer_details?.name  || 'zákazníku';
-  const email   = session.customer_details?.email || '';
-  const service = serviceFromAmount(session.amount_total || 0);
+  const name = session.metadata?.name || session.customer_details?.name || 'zákazníku';
+  const email = session.customer_details?.email || '';
+  const service = session.metadata?.service || 'Freistellung služba';
 
   return {
     to: email,
-    subject: 'Přijali jsme vaši objednávku — Freistellung Express',
+    subject: 'Platba přijata — Freistellung Express',
     html: `
 <!DOCTYPE html>
 <html lang="cs">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f9fafb;font-family:Inter,Arial,sans-serif">
-<div style="max-width:560px;margin:40px auto;background:#ffffff;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb">
+<body style="font-family:Arial;background:#f9fafb;padding:20px">
 
-  <div style="background:#1B3A6B;padding:32px 36px">
-    <div style="font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.5px">Freistellung Express</div>
-    <div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:4px">freistellung-express.com</div>
-  </div>
+<h2>Platba přijata ✓</h2>
 
-  <div style="padding:36px">
-    <h2 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#111827">Platba přijata ✓</h2>
-    <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.7">
-      Dobrý den, <strong style="color:#111827">${name}</strong>.<br>
-      Vaše objednávka byla úspěšně zaplacena. Nyní se pustíme do práce.
-    </p>
+<p>Dobrý den, <strong>${name}</strong>,</p>
+<p>děkujeme za vaši objednávku.</p>
 
-    <div style="background:#EEF3FB;border:1px solid #C3D4EE;border-radius:8px;padding:18px 20px;margin-bottom:24px">
-      <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#2452A0;margin-bottom:8px">Objednaná služba</div>
-      <div style="font-size:16px;font-weight:700;color:#1B3A6B">${service.name}</div>
-      <div style="font-size:13px;color:#6b7280;margin-top:4px">${service.desc}</div>
-    </div>
+<h3>Objednaná služba:</h3>
+<p><strong>${service}</strong></p>
 
-    <div style="margin-bottom:24px">
-      <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:10px">Co se děje dál?</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        ${[
-          ['1', 'Zkontrolujeme vaše podklady', 'Do 24 hodin vás případně kontaktujeme, pokud budeme potřebovat doplnit informace.'],
-          ['2', 'Podáme žádost na Finanzamt', 'Vše vyřídíme elektronicky přímo s německým finančním úřadem.'],
-          ['3', 'Dostanete Freistellung', 'Průměrná doba vyřízení je 4–8 týdnů. O výsledku vás budeme informovat.'],
-        ].map(([num, title, desc]) => `
-        <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:#f9fafb;border-radius:7px;border:1px solid #e5e7eb">
-          <div style="min-width:24px;height:24px;background:#1B3A6B;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0">${num}</div>
-          <div>
-            <div style="font-size:13px;font-weight:600;color:#111827">${title}</div>
-            <div style="font-size:12px;color:#6b7280;margin-top:2px;line-height:1.6">${desc}</div>
-          </div>
-        </div>`).join('')}
-      </div>
-    </div>
+<p>Začínáme na tom pracovat. Ozveme se do 24 hodin.</p>
 
-    <p style="font-size:13px;color:#6b7280;line-height:1.7;margin:0 0 6px">
-      Máte-li jakékoli dotazy, napište nám na
-      <a href="mailto:info@freistellung-express.com" style="color:#1B3A6B;font-weight:600;text-decoration:none">info@freistellung-express.com</a>
-      nebo přes WhatsApp.
-    </p>
-  </div>
+<hr>
+<p style="font-size:12px;color:#888">
+Freistellung Express<br>
+Tento email byl odeslán automaticky.
+</p>
 
-  <div style="padding:20px 36px;border-top:1px solid #e5e7eb;background:#f9fafb">
-    <p style="margin:0;font-size:11px;color:#9ca3af;line-height:1.6">
-      Freistellung Express · freistellung-express.com<br>
-      Tento email byl odeslán automaticky, prosím neodpovídejte na něj.
-    </p>
-  </div>
-
-</div>
 </body>
-</html>`,
+</html>
+`
   };
 }
 
@@ -103,37 +69,48 @@ export async function onRequestPost(context) {
   const rawBody = await request.text();
   const sigHeader = request.headers.get('stripe-signature') || '';
 
-  const valid = await verifyStripeSignature(rawBody, sigHeader, env.STRIPE_WEBHOOK_SECRET);
+  const valid = await verifyStripeSignature(
+    rawBody,
+    sigHeader,
+    env.STRIPE_WEBHOOK_SECRET
+  );
+
   if (!valid) {
     return new Response('Invalid signature', { status: 400 });
   }
 
   let event;
-  try { event = JSON.parse(rawBody); } catch {
+  try {
+    event = JSON.parse(rawBody);
+  } catch {
     return new Response('Bad JSON', { status: 400 });
   }
 
-  if (event.type === 'checkout.session.completed') {
+  // 🔥 PODPORA I PRO ASYNC PLATBY
+  if (
+    event.type === 'checkout.session.completed' ||
+    event.type === 'checkout.session.async_payment_succeeded'
+  ) {
     const session = event.data.object;
-    const customerEmail = session.customer_details?.email;
 
-    if (customerEmail) {
-      const mail = buildConfirmationEmail(session);
+    const mail = buildConfirmationEmail(session);
 
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'Freistellung Express <noreply@freistellung-express.com>',
-          to: [mail.to],
-          subject: mail.subject,
-          html: mail.html,
-        }),
-      });
-    }
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Freistellung Express <noreply@freistellung-express.com>',
+        to: [mail.to],
+        subject: mail.subject,
+        html: mail.html,
+      }),
+    });
+
+    // 🔍 DEBUG LOG (doporučuju nechat)
+    console.log("RESEND STATUS:", res.status);
   }
 
   return new Response(JSON.stringify({ received: true }), {
@@ -151,6 +128,7 @@ export async function onRequestOptions() {
     },
   });
 }
+
 export async function onRequestGet() {
-  return new Response("WEBHOOK GET OK", { status: 200 });
+  return new Response("WEBHOOK OK", { status: 200 });
 }
