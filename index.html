@@ -1382,36 +1382,41 @@ function sebratData(){
   const nazev=vybranaSluzba==='vyrizeni'?'Kompletni vyrizeni (100 EUR)':vybranaSluzba==='podani'?'Podani (80 EUR)':'Komplet se Steuernummer (120 EUR)';
   return{'VYBRANA SLUZBA':nazev,'Jazyk':currentLang,'Jmeno':document.getElementById('jmeno').value,'Narozeni':document.getElementById('narozeni').value,'Statni':document.getElementById('statni').value,'Telefon':document.getElementById('telefon').value,'Email':document.getElementById('email').value,'Ulice':document.getElementById('ulice').value,'Mesto':document.getElementById('mesto').value,'PSC':document.getElementById('psc').value,'Stat':document.getElementById('stat').value,'Firma':document.getElementById('firma').value,'Typ podnikani':document.getElementById('typ-podnikani').value,'Obor':document.getElementById('obor').value,'DIC':document.getElementById('dic').value||'-','Steuernummer':document.getElementById('steuernummer').value||'-','Ma Freistellung':document.getElementById('ma-freistellung').value,'Pracuje v DE od':document.getElementById('od-kdy').value,'Delka prace':document.getElementById('jak-dlouho').value,'Misto prace':document.getElementById('kde-pracuje').value,'Zakazky':zakazky.join('\n')||'-'};
 }
-async function odeslatFormspree(){
-  if(formularOdeslan)return true;
-  const data=sebratData(),formData=new FormData();
-  Object.entries(data).forEach(([k,v])=>formData.append(k,v));
-  try{const res=await fetch('https://formspree.io/f/mgorenaj',{method:'POST',body:formData,headers:{'Accept':'application/json'}});if(res.ok){formularOdeslan=true;return true;}return false;}catch(e){return false;}
-}
-function zobrazBankovniPrevod(){
-  const info=document.getElementById('bankovni-info'),visible=info.style.display==='block';
-  info.style.display=visible?'none':'block';
-  if(!visible)odeslatFormspree().then(ok=>{if(ok)document.getElementById('success-msg').classList.add('show');});
+async function odeslatNaServer(){
+  if(formularOdeslan) return true;
+  const data=sebratData();
+  const fd=new FormData();
+  Object.entries(data).forEach(([k,v])=>fd.append(k,v));
+  const z=document.getElementById('input-zivnostak')?.files[0];
+  const sm=document.getElementById('input-smlouva')?.files[0];
+  if(z) fd.append('priloha_zivnostensky_list', z, z.name);
+  if(sm) fd.append('priloha_smlouva_objednavka', sm, sm.name);
+  try {
+    const res=await fetch('/submit', {method:'POST', body:fd});
+    if(res.ok){ formularOdeslan=true; return true; }
+    return false;
+  } catch(e){ return false; }
 }
 function zpracovatPlatbu(){
-  const links = {
-    'vyrizeni': 'https://buy.stripe.com/5kQ00j1P21dP5Ywbrv3sI01', 
-    'podani': 'https://buy.stripe.com/fZufZhdxK3lXaeM0MR3sI00',
-    'steuernummer': 'https://buy.stripe.com/14A28r0KY8Ghfz61QV3sI02'
-  };
-
-  odeslatFormspree().then(ok => {
-    if(ok) {
-      document.getElementById('success-msg').classList.add('show');
-    }
-    
-    let link = links[vybranaSluzba];
-    const email = document.getElementById('email').value;
-    
-    if (email) {
-      link += '?prefilled_email=' + encodeURIComponent(email);
-    }
-    window.location.href = link;
+  const links={'vyrizeni':'https://buy.stripe.com/5kQ00j1P21dP5Ywbrv3sI01','podani':'https://buy.stripe.com/fZufZhdxK3lXaeM0MR3sI00','steuernummer':'https://buy.stripe.com/14A28r0KY8Ghfz61QV3sI02'};
+  const btn=document.getElementById('btn-card');
+  if(btn){btn.disabled=true; btn.textContent='⏳ Odesílám...';}
+  odeslatNaServer().finally(()=>{
+    let link=links[vybranaSluzba];
+    const email=document.getElementById('email').value;
+    if(email) link+='?prefilled_email='+encodeURIComponent(email);
+    window.location.href=link;
+  });
+}
+function zobrazBankovniPrevod(){
+  const info=document.getElementById('bankovni-info');
+  if(info.style.display==='block'){ info.style.display='none'; return; }
+  const btn=document.getElementById('btn-transfer');
+  if(btn){btn.disabled=true; btn.textContent='⏳ Odesílám...';}
+  odeslatNaServer().finally(()=>{
+    info.style.display='block';
+    if(formularOdeslan) document.getElementById('success-msg').classList.add('show');
+    if(btn){btn.disabled=false; btn.innerHTML=t('btn_transfer');}
   });
 }
 
