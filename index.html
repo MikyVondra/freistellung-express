@@ -364,7 +364,7 @@
           <div class="form-block-title" id="form-basic">Základní údaje</div>
           <div class="fg-group">
             <div class="fg" id="fg-jmeno"><label>Jméno a příjmení *</label><input type="text" id="jmeno" placeholder="Jan Novák" autocomplete="name"><span class="err-msg">Zadejte jméno i příjmení</span></div>
-            <div class="fg" id="fg-narozeni"><label>Datum narození *</label><input type="text" id="narozeni" placeholder="01.01.1985"><span class="err-msg">Formát: DD.MM.RRRR</span></div>
+            <div class="fg" id="fg-narozeni"><label>Datum narození *</label><input type="text" id="narozeni" placeholder="01.01.1985" inputmode="numeric"><span class="err-msg">Formát: DD.MM.RRRR</span></div>
             <div class="fg" id="fg-statni"><label>Státní příslušnost *</label><input type="text" id="statni" placeholder="česká"><span class="err-msg">Vyplňte státní příslušnost</span></div>
             <div class="fg" id="fg-telefon"><label>Telefon *</label><input type="tel" id="telefon" placeholder="+420 777 000 000" autocomplete="tel"><span class="err-msg">Zadejte platné telefonní číslo</span></div>
             <div class="fg full" id="fg-email"><label>E-mail *</label><input type="email" id="email" placeholder="vas@email.cz" autocomplete="email"><span class="err-msg">Zadejte platný e-mail</span></div>
@@ -374,9 +374,9 @@
           <div class="form-block-title" id="form-address">Adresa bydliště</div>
           <div class="fg-group">
             <div class="fg" id="fg-ulice"><label>Ulice a číslo *</label><input type="text" id="ulice" placeholder="Novákova 1"><span class="err-msg">Vyplňte ulici a číslo</span></div>
-            <div class="fg" id="fg-mesto"><label>Město *</label><input type="text" id="mesto" placeholder="Praha"><span class="err-msg">Vyplňte město</span></div>
-            <div class="fg" id="fg-psc"><label>PSČ *</label><input type="text" id="psc" placeholder="110 00"><span class="err-msg">Vyplňte PSČ</span></div>
-            <div class="fg" id="fg-stat"><label>Stát *</label><input type="text" id="stat" placeholder="Česká republika"><span class="err-msg">Vyplňte stát</span></div>
+            <div class="fg" id="fg-mesto"><label>Město *</label><input type="text" id="mesto" placeholder="Praha" list="datalist-mesto" autocomplete="off"><span class="err-msg">Vyplňte město</span></div>
+            <div class="fg" id="fg-psc"><label>PSČ *</label><input type="text" id="psc" placeholder="110 00" inputmode="numeric"><span class="err-msg">Vyplňte PSČ</span></div>
+            <div class="fg" id="fg-stat"><label>Stát *</label><input type="text" id="stat" placeholder="Česká republika" list="datalist-stat" autocomplete="off"><span class="err-msg">Vyplňte stát</span></div>
           </div>
         </div>
         <div class="form-block">
@@ -398,7 +398,7 @@
         <div class="form-block">
           <div class="form-block-title" id="form-work">Práce v Německu</div>
           <div class="fg-group">
-            <div class="fg" id="fg-od-kdy"><label>Od kdy pracuješ v Německu *</label><input type="text" id="od-kdy" placeholder="01.01.2024"><span class="err-msg">Vyplňte datum</span></div>
+            <div class="fg" id="fg-od-kdy"><label>Od kdy pracuješ v Německu *</label><input type="text" id="od-kdy" placeholder="01.01.2024" inputmode="numeric"><span class="err-msg">Vyplňte datum</span></div>
             <div class="fg" id="fg-jak-dlouho"><label>Předpokládaná doba práce *</label><input type="text" id="jak-dlouho" placeholder="6 měsíců"><span class="err-msg">Vyplňte dobu práce</span></div>
             <div class="fg full" id="fg-kde-pracuje"><label>Kde pracuješ (město / region) *</label><input type="text" id="kde-pracuje" placeholder="Berlin, Bayern, München..."><span class="err-msg">Vyplňte místo práce</span></div>
           </div>
@@ -1462,6 +1462,131 @@ document.addEventListener('DOMContentLoaded', function() {
     saved = ['cs','sk','pl','en'].includes(browserLang) ? browserLang : 'cs';
   }
   switchLang(saved);
+});
+</script>
+
+<!-- Datalisty pro autocomplete -->
+<datalist id="datalist-mesto">
+  <option value="Praha"><option value="Brno"><option value="Ostrava"><option value="Plzeň">
+  <option value="Liberec"><option value="Olomouc"><option value="Hradec Králové">
+  <option value="České Budějovice"><option value="Pardubice"><option value="Zlín">
+  <option value="Opava"><option value="Kladno"><option value="Jihlava"><option value="Most">
+  <option value="Teplice"><option value="Bratislava"><option value="Košice"><option value="Prešov">
+  <option value="Žilina"><option value="Banská Bystrica"><option value="Nitra">
+  <option value="Kraków"><option value="Warszawa"><option value="Wrocław">
+</datalist>
+<datalist id="datalist-stat">
+  <option value="Česká republika"><option value="Slovensko"><option value="Polsko">
+  <option value="Německo"><option value="Maďarsko"><option value="Rakousko">
+  <option value="Rumunsko"><option value="Bulharsko"><option value="Chorvatsko">
+  <option value="Itálie"><option value="Francie"><option value="Belgie">
+  <option value="Nizozemsko"><option value="Švédsko"><option value="Norsko">
+  <option value="Švýcarsko"><option value="Spojené království">
+</datalist>
+
+<script>
+// ── Vylepšení formuláře ──────────────────────────────────────────────
+
+// Auto-formát data (DD.MM.RRRR)
+function setupDateInput(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', function() {
+    const oldLen = this.value.length;
+    let v = this.value.replace(/\D/g, '').slice(0, 8);
+    let fmt = v;
+    if (v.length > 2) fmt = v.slice(0,2) + '.' + v.slice(2);
+    if (v.length > 4) fmt = v.slice(0,2) + '.' + v.slice(2,4) + '.' + v.slice(4);
+    this.value = fmt;
+  });
+}
+
+// Auto-formát PSČ (XXX XX)
+function setupPscInput(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', function() {
+    let v = this.value.replace(/\D/g, '').slice(0, 5);
+    this.value = v.length > 3 ? v.slice(0,3) + ' ' + v.slice(3) : v;
+  });
+}
+
+// Auto-formát telefonu (+420 777 123 456)
+function setupPhoneInput(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', function() {
+    const hasPlus = this.value.startsWith('+');
+    let d = this.value.replace(/\D/g, '');
+    if (!d) { this.value = hasPlus ? '+' : ''; return; }
+    if (hasPlus) {
+      if (d.length <= 3)      this.value = '+' + d;
+      else if (d.length <= 6) this.value = '+' + d.slice(0,3) + ' ' + d.slice(3);
+      else if (d.length <= 9) this.value = '+' + d.slice(0,3) + ' ' + d.slice(3,6) + ' ' + d.slice(6);
+      else                    this.value = '+' + d.slice(0,3) + ' ' + d.slice(3,6) + ' ' + d.slice(6,9) + ' ' + d.slice(9,12);
+    } else {
+      this.value = d.replace(/(\d{3})(?=\d)/g, '$1 ').trim().slice(0, 14);
+    }
+  });
+}
+
+// Živá validace při opuštění pole (blur)
+function setupBlurValidation() {
+  povinna.forEach(p => {
+    const el = document.getElementById(p.id);
+    if (!el) return;
+    el.addEventListener('blur', function() {
+      const fg = document.getElementById(p.fg);
+      if (this.value && !p.check(this.value)) {
+        fg?.classList.add('has-error');
+        this.classList.add('error');
+      } else if (p.check(this.value)) {
+        fg?.classList.remove('has-error');
+        this.classList.remove('error');
+      }
+    });
+  });
+}
+
+// Ukládání do localStorage
+const LS_FIELDS  = ['jmeno','narozeni','statni','telefon','email','ulice','mesto','psc','stat','firma','obor','dic','steuernummer','od-kdy','jak-dlouho','kde-pracuje'];
+const LS_SELECTS = ['typ-podnikani','ma-freistellung'];
+const LS_PRE     = 'fe_form_';
+
+function ulozitFormular() {
+  LS_FIELDS.forEach(id  => { const el = document.getElementById(id); if (el) localStorage.setItem(LS_PRE + id, el.value); });
+  LS_SELECTS.forEach(id => { const el = document.getElementById(id); if (el) localStorage.setItem(LS_PRE + id, el.value); });
+}
+function obnovitFormular() {
+  LS_FIELDS.forEach(id  => { const v = localStorage.getItem(LS_PRE + id); const el = document.getElementById(id); if (el && v) el.value = v; });
+  LS_SELECTS.forEach(id => { const v = localStorage.getItem(LS_PRE + id); const el = document.getElementById(id); if (el && v) el.value = v; });
+}
+function vymazatFormularStorage() {
+  [...LS_FIELDS, ...LS_SELECTS].forEach(id => localStorage.removeItem(LS_PRE + id));
+}
+
+// Napojení ukládání na původní odeslání
+const _origOdeslat = odeslatNaServer;
+odeslatNaServer = async function() {
+  const result = await _origOdeslat();
+  if (result) vymazatFormularStorage();
+  return result;
+};
+
+let _saveTimer;
+function debouncedSave() { clearTimeout(_saveTimer); _saveTimer = setTimeout(ulozitFormular, 600); }
+
+document.addEventListener('DOMContentLoaded', function() {
+  setupDateInput('narozeni');
+  setupDateInput('od-kdy');
+  setupPscInput('psc');
+  setupPhoneInput('telefon');
+  setupBlurValidation();
+  obnovitFormular();
+  [...LS_FIELDS, ...LS_SELECTS].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', debouncedSave);
+  });
 });
 </script>
 </body>
