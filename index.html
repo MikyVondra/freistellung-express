@@ -1400,15 +1400,24 @@ async function odeslatNaServer(){
 }
 
 function zpracovatPlatbu(){
-  const links={'vyrizeni':'https://buy.stripe.com/test_14A28r65Q7snde2aiV4Ni03','podani':'https://buy.stripe.com/fZufZhdxK3lXaeM0MR3sI00','steuernummer':'https://buy.stripe.com/14A28r0KY8Ghfz61QV3sI02'};
   const btn=document.getElementById('btn-card');
   if(btn){btn.disabled=true; btn.textContent='⏳ Odesílám...';}
-  odeslatNaServer().finally(()=>{
-    let link=links[vybranaSluzba];
-    const email=document.getElementById('email').value;
-    if(email) link+='?prefilled_email='+encodeURIComponent(email);
-    window.location.href=link;
-  });
+  const data=sebratData();
+  const fd=new FormData();
+  Object.entries(data).forEach(([k,v])=>fd.append(k,v));
+  fd.append('CENA', String(vybranaCena));
+  const z=document.getElementById('input-zivnostak')?.files[0];
+  const sm=document.getElementById('input-smlouva')?.files[0];
+  if(z) fd.append('priloha_zivnostensky_list', z, z.name);
+  if(sm) fd.append('priloha_smlouva_objednavka', sm, sm.name);
+  fetch('/submit',{method:'POST',body:fd})
+    .then(r=>r.json())
+    .then(json=>{
+      vymazatFormularStorage();
+      if(json.url) window.location.href=json.url;
+      else if(btn){btn.disabled=false; btn.textContent=t('btn_card');}
+    })
+    .catch(()=>{if(btn){btn.disabled=false; btn.textContent=t('btn_card');}});
 }
 
 function zobrazBankovniPrevod(){
