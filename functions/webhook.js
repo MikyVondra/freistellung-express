@@ -2,22 +2,22 @@ export async function onRequestPost(context) {
   const { request, env } = context;
 
   const rawBody = await request.text();
-  const sigHeader = request.headers.get("stripe-signature") || "";
 
   let event;
 
   try {
-    event = JSON.parse(rawBody); // dočasně bez verify (na test)
-  } catch (err) {
+    event = JSON.parse(rawBody);
+  } catch {
     return new Response("Invalid body", { status: 400 });
   }
-
-  console.log("EVENT:", event.type);
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
 
-    const email = session.customer_details?.email;
+    // 🔥 DŮLEŽITÉ – fallback na metadata
+    const email =
+      session.customer_details?.email ||
+      session.metadata?.email;
 
     if (email) {
       await fetch("https://api.resend.com/emails", {
