@@ -1,86 +1,50 @@
 export async function onRequestPost(context) {
-    const { request, env } = context;
+  const { request, env } = context;
 
-    // CORS headers
-    const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-    };
+  const formData = await request.formData();
 
-    try {
-        const formData = await request.formData();
+  const email = formData.get("Email") || "";
+  const name = formData.get("Jmeno") || "";
+  const service = formData.get("VYBRANA SLUZBA") || "80";
 
-        // Collect all text fields
-        const fields = {};
-        const attachments = [];
+  let amount = 8000;
+  let serviceName = "Podání žádosti (80 €)";
 
-        for (const [key, value] of formData.entries()) {
-            if (value instanceof File && value.size > 0) {
-                // Convert file to base64
-                const arrayBuffer = await value.arrayBuffer();
-               const bytes = new Uint8Array(arrayBuffer);
-let binary = '';
-for (let i = 0; i < bytes.byteLength; i++) {
-  binary += String.fromCharCode(bytes[i]);
-}
-const base64 = btoa(binary);
-                attachments.push({
-                    filename: value.name,
-                    content: base64,
-                });
-            } else if (typeof value === 'string') {
-                fields[key] = value;
-            }
-        }
+  if (service === "100") {
+    amount = 10000;
+    serviceName = "Kompletní vyřízení (100 €)";
+  }
 
-        // Build email HTML
-        const html = `
-      <h2>Nová objednávka Freistellung Express</h2>
-      <table style="border-collapse:collapse;width:100%">
-        ${Object.entries(fields).map(([k, v]) => `
-          <tr>
-            <td style="padding:6px 12px;border:1px solid #e5e7eb;font-weight:600;background:#f9fafb;width:200px">${k}</td>
-            <td style="padding:6px 12px;border:1px solid #e5e7eb">${v || '-'}</td>
-          </tr>
-        `).join('')}
-      </table>
-      ${attachments.length > 0 ? `<p style="margin-top:16px">📎 Přílohy: ${attachments.map(a => a.filename).join(', ')}</p>` : '<p style="margin-top:16px;color:#6b7280">Žádné přílohy nebyly nahrány.</p>'}
-    `;
+  if (service === "120") {
+    amount = 12000;
+    serviceName = "Komplet se Steuernummer (120 €)";
+  }
 
-        // Send via Resend
-        const resendRes = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${env.RESEND_API_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                from: 'Freistellung Express <noreply@freistellung-express.com>',
-                to: ['mira.jaros7@seznam.cz'],
-                subject: `Nová objednávka — ${fields['Jmeno'] || 'neznámý'} (${fields['VYBRANA SLUZBA'] || ''})`,
-                html,
-                attachments,
-            }),
-        });
+  const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      mode: "payment",
+      success_url: "https://freistellung-express.com/dekujeme",
+      cancel_url: "https://freistellung-express.com/zruseno",
 
-        if (!resendRes.ok) {
-            const err = await resendRes.text();
-            return new Response(JSON.stringify({ ok: false, error: err }), { status: 500, headers });
-        }
+      customer_email: email,
 
-        return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
+      "metadata[name]": name,
+      "metadata[email]": email,
+      "metadata[service]": serviceName,
 
-    } catch (err) {
-        return new Response(JSON.stringify({ ok: false, error: err.message }), { status: 500, headers });
-    }
-}
+      "line_items[0][price_data][currency]": "eur",
+      "line_items[0][price_data][product_data][name]": serviceName,
+      "line_items[0][price_data][unit_amount]": amount,
+      "line_items[0][quantity]": "1",
+    }),
+  });
 
-export async function onRequestOptions() {
-    return new Response(null, {
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-        },
-    });
+  const session = await stripeRes.json();
+
+  return Response.redirect(session.url, 303);
 }
