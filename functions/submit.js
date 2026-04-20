@@ -48,7 +48,7 @@ const base64 = btoa(binary);
     `;
 
         // Send via Resend
-        //const resendRes = await fetch('https://api.resend.com/emails', {
+        const resendRes = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${env.RESEND_API_KEY}`,
