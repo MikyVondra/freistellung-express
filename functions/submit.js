@@ -47,34 +47,7 @@ const base64 = btoa(binary);
       ${attachments.length > 0 ? `<p style="margin-top:16px">📎 Přílohy: ${attachments.map(a => a.filename).join(', ')}</p>` : '<p style="margin-top:16px;color:#6b7280">Žádné přílohy nebyly nahrány.</p>'}
     `;
 
-        // Send via Resend
-        const resendRes = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${env.RESEND_API_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                from: 'Freistellung Express <noreply@freistellung-express.com>',
-                to: ['mira.jaros7@seznam.cz'],
-                subject: `Nová objednávka — ${fields['Jmeno'] || 'neznámý'} (${fields['VYBRANA SLUZBA'] || ''})`,
-                html,
-                attachments,
-            }),
-        });
-
-        if (!resendRes.ok) {
-            const err = await resendRes.text();
-            return new Response(JSON.stringify({ ok: false, error: err }), { status: 500, headers });
-        }
-
-        return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
-
-    } catch (err) {
-        return new Response(JSON.stringify({ ok: false, error: err.message }), { status: 500, headers });
-    }
-}
-
+        
 export async function onRequestOptions() {
     return new Response(null, {
         headers: {
