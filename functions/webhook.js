@@ -30,6 +30,7 @@ export async function onRequestPost(context) {
       mode: "payment",
       success_url: "https://freistellung-express.com/dekujeme",
       cancel_url: "https://freistellung-express.com/zruseno",
+
       customer_email: email,
 
       "metadata[name]": name,
