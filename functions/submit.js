@@ -1,60 +1,53 @@
 export async function onRequestPost(context) {
-    const { request } = context;
+  const { request, env } = context;
 
-    const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-    };
+  const formData = await request.formData();
 
-    try {
-        const formData = await request.formData();
+  const email = formData.get("Email") || "";
+  const name = formData.get("Jmeno") || "";
+  const service = formData.get("VYBRANA SLUZBA") || "80";
 
-        const fields = {};
-        const attachments = [];
+  // 🎯 mapování služby → cena
+  let amount = 8000;
+  let serviceName = "Podání žádosti (80 €)";
 
-        for (const [key, value] of formData.entries()) {
-            if (value instanceof File && value.size > 0) {
-                const arrayBuffer = await value.arrayBuffer();
-                const bytes = new Uint8Array(arrayBuffer);
+  if (service === "100") {
+    amount = 10000;
+    serviceName = "Kompletní vyřízení (100 €)";
+  }
 
-                let binary = '';
-                for (let i = 0; i < bytes.byteLength; i++) {
-                    binary += String.fromCharCode(bytes[i]);
-                }
+  if (service === "120") {
+    amount = 12000;
+    serviceName = "Komplet se Steuernummer (120 €)";
+  }
 
-                const base64 = btoa(binary);
+  const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${env.STRIPE_SECRET_KEY}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      mode: "payment",
 
-                attachments.push({
-                    filename: value.name,
-                    content: base64,
-                });
-            } else if (typeof value === 'string') {
-                fields[key] = value;
-            }
-        }
+      success_url: "https://freistellung-express.com/dekujeme",
+      cancel_url: "https://freistellung-express.com/zruseno",
 
-        // 🔥 TADY UŽ NIC NEPOSÍLÁŠ (žádný resend!)
+      customer_email: email,
 
-        return new Response(JSON.stringify({ ok: true }), {
-            status: 200,
-            headers,
-        });
+      // 🔥 metadata → půjde do webhooku
+      "metadata[name]": name,
+      "metadata[email]": email,
+      "metadata[service]": serviceName,
 
-    } catch (err) {
-        return new Response(JSON.stringify({ ok: false, error: err.message }), {
-            status: 500,
-            headers,
-        });
-    }
-}
+      "line_items[0][price_data][currency]": "eur",
+      "line_items[0][price_data][product_data][name]": serviceName,
+      "line_items[0][price_data][unit_amount]": amount,
+      "line_items[0][quantity]": "1",
+    }),
+  });
 
-// ✅ MUSÍ BÝT MIMO
-export async function onRequestOptions() {
-    return new Response(null, {
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-        },
-    });
+  const session = await stripeRes.json();
+
+  return Response.redirect(session.url, 303);
 }
