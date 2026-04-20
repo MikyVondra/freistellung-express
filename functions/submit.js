@@ -7,7 +7,6 @@ export async function onRequestPost(context) {
   const name = formData.get("Jmeno") || "";
   const service = formData.get("VYBRANA SLUZBA") || "80";
 
-  // 🎯 mapování služby → cena
   let amount = 8000;
   let serviceName = "Podání žádosti (80 €)";
 
@@ -29,13 +28,11 @@ export async function onRequestPost(context) {
     },
     body: new URLSearchParams({
       mode: "payment",
-
       success_url: "https://freistellung-express.com/dekujeme",
       cancel_url: "https://freistellung-express.com/zruseno",
 
       customer_email: email,
 
-      // 🔥 metadata → půjde do webhooku
       "metadata[name]": name,
       "metadata[email]": email,
       "metadata[service]": serviceName,
