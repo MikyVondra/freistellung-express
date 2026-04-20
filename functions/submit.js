@@ -18,7 +18,12 @@ export async function onRequestPost(context) {
             if (value instanceof File && value.size > 0) {
                 // Convert file to base64
                 const arrayBuffer = await value.arrayBuffer();
-                const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+               const bytes = new Uint8Array(arrayBuffer);
+let binary = '';
+for (let i = 0; i < bytes.byteLength; i++) {
+  binary += String.fromCharCode(bytes[i]);
+}
+const base64 = btoa(binary);
                 attachments.push({
                     filename: value.name,
                     content: base64,
