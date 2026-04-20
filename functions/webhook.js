@@ -151,3 +151,6 @@ export async function onRequestOptions() {
     },
   });
 }
+export async function onRequestGet() {
+  return new Response("WEBHOOK GET OK", { status: 200 });
+}
