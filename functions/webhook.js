@@ -103,6 +103,10 @@ export async function onRequestPost(context) {
   const rawBody = await request.text();
   const sigHeader = request.headers.get('stripe-signature') || '';
 
+  if (!env.STRIPE_WEBHOOK_SECRET) {
+    return new Response('STRIPE_WEBHOOK_SECRET not configured', { status: 500 });
+  }
+
   const valid = await verifyStripeSignature(rawBody, sigHeader, env.STRIPE_WEBHOOK_SECRET);
   if (!valid) {
     return new Response('Invalid signature', { status: 400 });
