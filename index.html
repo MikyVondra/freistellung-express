@@ -1398,7 +1398,7 @@ async function odeslatNaServer(){
     return false;
   } catch(e){ return false; }
 }
-/*  
+
 function zpracovatPlatbu(){
   const links={'vyrizeni':'https://buy.stripe.com/test_14A28r65Q7snde2aiV4Ni03','podani':'https://buy.stripe.com/fZufZhdxK3lXaeM0MR3sI00','steuernummer':'https://buy.stripe.com/14A28r0KY8Ghfz61QV3sI02'};
   const btn=document.getElementById('btn-card');
@@ -1410,37 +1410,7 @@ function zpracovatPlatbu(){
     window.location.href=link;
   });
 }
-*/
-function zpracovatPlatbu() {
-  const TEST_LINK = 'https://buy.stripe.com/test_14A28r65Q7snde2aiV4Ni03';
 
-  const links = {
-    vyrizeni: TEST_LINK,
-    podani: TEST_LINK,
-    steuernummer: TEST_LINK
-  };
-
-  const btn = document.getElementById('btn-card');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = '⏳ Odesílám...';
-  }
-
-  console.log('vybranaSluzba =', vybranaSluzba);
-  console.log('redirect link =', links[vybranaSluzba]);
-
-  odeslatNaServer().finally(() => {
-    let link = links[vybranaSluzba] || TEST_LINK;
-    const email = document.getElementById('email')?.value?.trim();
-
-    if (email) {
-      link += '?prefilled_email=' + encodeURIComponent(email);
-    }
-
-    window.location.href = link;
-  });
-}
-  
 function zobrazBankovniPrevod(){
   const info=document.getElementById('bankovni-info');
   if(info.style.display==='block'){ info.style.display='none'; return; }
