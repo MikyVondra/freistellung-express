@@ -23,7 +23,7 @@ export async function onRequestPost(context) {
   const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${env.STRIPE_SECRET_KEY}`,
+      Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
