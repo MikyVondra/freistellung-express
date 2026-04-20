@@ -1,7 +1,6 @@
 export async function onRequestPost(context) {
-    const { request, env } = context;
+    const { request } = context;
 
-    // CORS headers
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
@@ -10,20 +9,21 @@ export async function onRequestPost(context) {
     try {
         const formData = await request.formData();
 
-        // Collect all text fields
         const fields = {};
         const attachments = [];
 
         for (const [key, value] of formData.entries()) {
             if (value instanceof File && value.size > 0) {
-                // Convert file to base64
                 const arrayBuffer = await value.arrayBuffer();
-               const bytes = new Uint8Array(arrayBuffer);
-let binary = '';
-for (let i = 0; i < bytes.byteLength; i++) {
-  binary += String.fromCharCode(bytes[i]);
-}
-const base64 = btoa(binary);
+                const bytes = new Uint8Array(arrayBuffer);
+
+                let binary = '';
+                for (let i = 0; i < bytes.byteLength; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+
+                const base64 = btoa(binary);
+
                 attachments.push({
                     filename: value.name,
                     content: base64,
@@ -33,21 +33,22 @@ const base64 = btoa(binary);
             }
         }
 
-        // Build email HTML
-        const html = `
-      <h2>Nová objednávka Freistellung Express</h2>
-      <table style="border-collapse:collapse;width:100%">
-        ${Object.entries(fields).map(([k, v]) => `
-          <tr>
-            <td style="padding:6px 12px;border:1px solid #e5e7eb;font-weight:600;background:#f9fafb;width:200px">${k}</td>
-            <td style="padding:6px 12px;border:1px solid #e5e7eb">${v || '-'}</td>
-          </tr>
-        `).join('')}
-      </table>
-      ${attachments.length > 0 ? `<p style="margin-top:16px">📎 Přílohy: ${attachments.map(a => a.filename).join(', ')}</p>` : '<p style="margin-top:16px;color:#6b7280">Žádné přílohy nebyly nahrány.</p>'}
-    `;
+        // 🔥 TADY UŽ NIC NEPOSÍLÁŠ (žádný resend!)
 
-        
+        return new Response(JSON.stringify({ ok: true }), {
+            status: 200,
+            headers,
+        });
+
+    } catch (err) {
+        return new Response(JSON.stringify({ ok: false, error: err.message }), {
+            status: 500,
+            headers,
+        });
+    }
+}
+
+// ✅ MUSÍ BÝT MIMO
 export async function onRequestOptions() {
     return new Response(null, {
         headers: {
