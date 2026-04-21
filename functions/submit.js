@@ -21,7 +21,7 @@ export async function onRequestPost(context) {
   const email       = fields['Email']         || '';
   const name        = fields['Jmeno']         || '';
   const cena        = parseInt(fields['CENA'] || '0', 10);
-  const serviceMap  = { 80: 'Podání žádosti', 100: 'Kompletní vyřízení', 120: 'Komplet se Steuernummer' };
+  const serviceMap  = { 80: 'TEST', 100: 'Kompletní vyřízení', 120: 'Komplet se Steuernummer' };
   const serviceName = serviceMap[cena] || 'Freistellung Express';
 
   // Email majiteli s daty + přílohami (hned po odeslání formuláře)
@@ -70,7 +70,7 @@ export async function onRequestPost(context) {
       customer_email: email,
       'line_items[0][price_data][currency]':           'eur',
       'line_items[0][price_data][product_data][name]': serviceName,
-      'line_items[0][price_data][unit_amount]':        String(cena * 100),
+      'line_items[0][price_data][unit_amount]':        cena === 80 ? '100' : String(cena * 100),
       'line_items[0][quantity]':                       '1',
       ...metaParams,
     }),
