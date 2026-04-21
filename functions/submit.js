@@ -98,7 +98,7 @@ export async function onRequestPost(context) {
       'line_items[0][price_data][currency]':                    'eur',
       'line_items[0][price_data][product_data][name]':          serviceName,
       'line_items[0][price_data][product_data][description]':   serviceDesc,
-      'line_items[0][price_data][unit_amount]':                 cena === 80 ? '100' : String(cena * 100),
+      'line_items[0][price_data][unit_amount]':                 String(cena * 100),
       'line_items[0][quantity]':                                '1',
       ...metaParams,
     }),
