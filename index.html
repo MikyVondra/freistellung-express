@@ -1400,7 +1400,6 @@ async function odeslatNaServer(){
 }
 
 function zpracovatPlatbu(){
-  const links={'vyrizeni':'https://buy.stripe.com/5kQ00j1P21dP5Ywbrv3sI01','podani':'https://buy.stripe.com/fZufZhdxK3lXaeM0MR3sI00','steuernummer':'https://buy.stripe.com/14A28r0KY8Ghfz61QV3sI02'};
   const btn=document.getElementById('btn-card');
   if(btn){btn.disabled=true; btn.textContent='⏳ Odesílám...';}
   const data=sebratData();
@@ -1416,17 +1415,12 @@ function zpracovatPlatbu(){
     .then(json=>{
       vymazatFormularStorage();
       if(json.url){ window.location.href=json.url; return; }
-      // fallback na Payment Links dokud neni STRIPE_SECRET_KEY
-      let link=links[vybranaSluzba];
-      const email=document.getElementById('email').value;
-      if(email) link+='?prefilled_email='+encodeURIComponent(email);
-      window.location.href=link;
+      if(btn){btn.disabled=false; btn.textContent=t('btn_card');}
+      alert('Nepodařilo se vytvořit platbu. Zkuste to prosím znovu.');
     })
     .catch(()=>{
-      let link=links[vybranaSluzba];
-      const email=document.getElementById('email').value;
-      if(email) link+='?prefilled_email='+encodeURIComponent(email);
-      window.location.href=link;
+      if(btn){btn.disabled=false; btn.textContent=t('btn_card');}
+      alert('Chyba připojení. Zkuste to prosím znovu.');
     });
 }
 
