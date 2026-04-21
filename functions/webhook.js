@@ -54,7 +54,7 @@ function buildCustomerEmail(session) {
   const svc = meta['VYBRANA_SLUZBA'] || '';
 
   const descMap = {
-    'Podani zadosti':          'Pripravime a odesleme zadost o Freistellung na Finanzamt.',
+    'Podani':                  'Pripravime a odesleme zadost o Freistellung na Finanzamt.',
     'Kompletni vyrizeni':      'Podani + komunikace s uradem az do uplneho schvaleni.',
     'Komplet se Steuernummer': 'Podame zadost o Steuernummer i Freistellung za vas.',
   };
