@@ -1478,6 +1478,15 @@ document.addEventListener('DOMContentLoaded', function() {
     saved = ['cs','sk','pl','en'].includes(browserLang) ? browserLang : 'cs';
   }
   switchLang(saved);
+
+  // Zobrazit banner po uspesne platbe
+  if(new URLSearchParams(window.location.search).get('platba') === 'ok') {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#16A34A;color:#fff;text-align:center;padding:18px 20px;font-family:Inter,sans-serif;font-size:15px;font-weight:600;box-shadow:0 2px 12px rgba(0,0,0,.15)';
+    banner.innerHTML = '✅ Platba proběhla úspěšně! Potvrzení vám bylo odesláno na e-mail. <span style="margin-left:16px;cursor:pointer;opacity:.7" onclick="this.parentNode.remove()">✕</span>';
+    document.body.prepend(banner);
+    window.history.replaceState({}, '', window.location.pathname);
+  }
 });
 </script>
 
