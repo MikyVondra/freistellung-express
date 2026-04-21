@@ -21,8 +21,34 @@ export async function onRequestPost(context) {
   const email       = fields['Email']         || '';
   const name        = fields['Jmeno']         || '';
   const cena        = parseInt(fields['CENA'] || '0', 10);
+  const lang        = fields['Jazyk'] || 'cs';
+
   const serviceMap  = { 80: 'Podání žádosti', 100: 'Kompletní vyřízení', 120: 'Komplet se Steuernummer' };
   const serviceName = serviceMap[cena] || 'Freistellung Express';
+
+  const svcDescMap = {
+    cs: {
+      80:  'Příprava a podání žádosti o Freistellung na německý Finanzamt.',
+      100: 'Podání žádosti + veškerá komunikace s úřadem až do schválení.',
+      120: 'Podání žádosti o Steuernummer i Freistellung – vše za vás.',
+    },
+    sk: {
+      80:  'Príprava a podanie žiadosti o Freistellung na nemecký Finanzamt.',
+      100: 'Podanie žiadosti + všetka komunikácia s úradom až do schválenia.',
+      120: 'Podanie žiadosti o Steuernummer aj Freistellung – všetko za vás.',
+    },
+    pl: {
+      80:  'Przygotowanie i złożenie wniosku o Freistellung do niemieckiego Finanzamt.',
+      100: 'Złożenie wniosku + pełna komunikacja z urzędem do zatwierdzenia.',
+      120: 'Złożenie wniosku o Steuernummer i Freistellung – wszystko za Ciebie.',
+    },
+    en: {
+      80:  'Preparation and submission of Freistellung application to the German Finanzamt.',
+      100: 'Application + full communication with the authority until approved.',
+      120: 'Steuernummer and Freistellung application – everything handled for you.',
+    },
+  };
+  const serviceDesc = (svcDescMap[lang] || svcDescMap.cs)[cena] || '';
 
   // Email majiteli s daty + přílohami (hned po odeslání formuláře)
   const rows = Object.entries(fields)
@@ -65,13 +91,15 @@ export async function onRequestPost(context) {
     },
     body: new URLSearchParams({
       mode: 'payment',
+      locale: ['cs','sk','pl','en'].includes(lang) ? lang : 'cs',
       success_url: 'https://freistellung-express.com/?platba=ok',
       cancel_url:  'https://freistellung-express.com/',
       customer_email: email,
-      'line_items[0][price_data][currency]':           'eur',
-      'line_items[0][price_data][product_data][name]': serviceName,
-      'line_items[0][price_data][unit_amount]':        String(cena * 100),
-      'line_items[0][quantity]':                       '1',
+      'line_items[0][price_data][currency]':                    'eur',
+      'line_items[0][price_data][product_data][name]':          serviceName,
+      'line_items[0][price_data][product_data][description]':   serviceDesc,
+      'line_items[0][price_data][unit_amount]':                 String(cena * 100),
+      'line_items[0][quantity]':                                '1',
       ...metaParams,
     }),
   });
