@@ -1380,6 +1380,7 @@ async function odeslatNaServer(){
   const data=sebratData();
   const fd=new FormData();
   Object.entries(data).forEach(([k,v])=>fd.append(k,v));
+  fd.append('CENA', String(vybranaCena));
   const z=document.getElementById('input-zivnostak')?.files[0];
   const sm=document.getElementById('input-smlouva')?.files[0];
   const dom=document.getElementById('input-domicil')?.files[0];
