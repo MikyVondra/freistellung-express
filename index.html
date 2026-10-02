@@ -81,7 +81,7 @@
     .sec-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
     .sec-title{font-size:clamp(24px,3vw,34px);font-weight:700;color:var(--text);line-height:1.2;letter-spacing:-.5px;margin-bottom:10px}
     .sec-desc{font-size:15px;color:var(--muted);line-height:1.7;max-width:500px;margin-bottom:44px}
-    .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden}
     .svc{background:var(--white);padding:28px;transition:background .15s;position:relative}
     .svc:hover{background:var(--bg)}
     .svc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
@@ -142,7 +142,7 @@
     .platba-sekce{display:none;margin-top:24px}
     .platba-sekce.zobrazena{display:block}
     .platba-header{padding:12px 16px;background:var(--blue);border-radius:7px;margin-bottom:18px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.8)}
-    .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+    .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
     .pc{border:1.5px solid var(--border);border-radius:10px;padding:20px;cursor:pointer;position:relative;transition:border-color .15s;user-select:none}
     .pc:hover{border-color:var(--blue)}
     .pc.sel{border-color:var(--blue);background:var(--blue-bg)}
@@ -323,19 +323,14 @@
     <p class="sec-desc" id="sec-services-desc">Podáme veškerou administrativu za vás — vy se soustředíte na práci.</p>
     <div class="services-grid">
       <div class="svc">
+        <div class="svc-top"><div class="svc-price">60 <span>€</span></div></div>
+        <div class="svc-name" id="svc1-name">Prodloužení dokumentu</div>
+        <div class="svc-desc" id="svc1-desc">Máte již Freistellung a potřebujete jeho prodloužení? Připravíme a podáme žádost o prodloužení dokumentu.</div>
+      </div>
+      <div class="svc">
         <div class="svc-top"><div class="svc-price">80 <span>€</span></div></div>
-        <div class="svc-name" id="svc1-name">Podání žádosti</div>
-        <div class="svc-desc" id="svc1-desc">Připravíme a odešleme vaši žádost o Freistellung na příslušný Finanzamt. Rychlé, jednoduché a bez papírování z vaší strany.</div>
-      </div>
-      <div class="svc">
-        <div class="svc-top"><div class="svc-price">100 <span>€</span></div><div class="svc-badge" id="svc2-badge">Nejoblíbenější</div></div>
-        <div class="svc-name" id="svc2-name">Kompletní vyřízení</div>
-        <div class="svc-desc" id="svc2-desc">Připravíme a podáme žádost na Finanzamt. Veškerou komunikaci s úřadem řešíme za vás až do úplného schválení.</div>
-      </div>
-      <div class="svc">
-        <div class="svc-top"><div class="svc-price">120 <span>€</span></div></div>
-        <div class="svc-name" id="svc3-name">Komplet se Steuernummer</div>
-        <div class="svc-desc" id="svc3-desc">Nemáte daňové číslo v Německu (Steuernummer)? Podáme žádost o jeho vydání jako součást balíčku.</div>
+        <div class="svc-name" id="svc2-name">Žádost o nový dokument</div>
+        <div class="svc-desc" id="svc2-desc">Připravíme a odešleme žádost o nový Freistellung na příslušný Finanzamt.</div>
       </div>
     </div>
   </div>
@@ -446,6 +441,30 @@
               <button class="upload-btn" type="button" id="upload-smlouva-btn" onclick="document.getElementById('input-smlouva').click()">Vybrat soubor</button>
               <input class="upload-input" type="file" id="input-smlouva" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(this,'upload-item-smlouva','upload-smlouva-name','upload-smlouva-btn')">
             </div>
+            <div class="upload-item" id="upload-item-domicil">
+              <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <div class="upload-meta"><div class="upload-label" id="upload-domicil-label">Daňový domicil</div><div class="upload-hint" id="upload-hint-3">PDF, JPG nebo PNG, max. 10 MB</div><div class="upload-filename" id="upload-domicil-name"></div></div>
+              <button class="upload-btn" type="button" id="upload-domicil-btn" onclick="document.getElementById('input-domicil').click()">Vybrat soubor</button>
+              <input class="upload-input" type="file" id="input-domicil" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(this,'upload-item-domicil','upload-domicil-name','upload-domicil-btn')">
+            </div>
+            <div class="upload-item" id="upload-item-a1">
+              <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <div class="upload-meta"><div class="upload-label" id="upload-a1-label">A1</div><div class="upload-hint" id="upload-hint-4">PDF, JPG nebo PNG, max. 10 MB</div><div class="upload-filename" id="upload-a1-name"></div></div>
+              <button class="upload-btn" type="button" id="upload-a1-btn" onclick="document.getElementById('input-a1').click()">Vybrat soubor</button>
+              <input class="upload-input" type="file" id="input-a1" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(this,'upload-item-a1','upload-a1-name','upload-a1-btn')">
+            </div>
+            <div class="upload-item" id="upload-item-obcanka">
+              <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <div class="upload-meta"><div class="upload-label" id="upload-obcanka-label">Občanský průkaz</div><div class="upload-hint" id="upload-hint-5">PDF, JPG nebo PNG, max. 10 MB</div><div class="upload-filename" id="upload-obcanka-name"></div></div>
+              <button class="upload-btn" type="button" id="upload-obcanka-btn" onclick="document.getElementById('input-obcanka').click()">Vybrat soubor</button>
+              <input class="upload-input" type="file" id="input-obcanka" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(this,'upload-item-obcanka','upload-obcanka-name','upload-obcanka-btn')">
+            </div>
+            <div class="upload-item" id="upload-item-stary">
+              <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <div class="upload-meta"><div class="upload-label" id="upload-stary-label">Starý Freistellung</div><div class="upload-hint" id="upload-hint-6">PDF, JPG nebo PNG, max. 10 MB</div><div class="upload-filename" id="upload-stary-name"></div></div>
+              <button class="upload-btn" type="button" id="upload-stary-btn" onclick="document.getElementById('input-stary').click()">Vybrat soubor</button>
+              <input class="upload-input" type="file" id="input-stary" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(this,'upload-item-stary','upload-stary-name','upload-stary-btn')">
+            </div>
           </div>
         </div>
         <div class="pokracovat-wrap">
@@ -454,11 +473,9 @@
         <div class="platba-sekce" id="platba">
           <div class="platba-header" id="pay-step">Krok 2 — Vyberte typ služby a zaplaťte</div>
           <div class="price-grid">
-            <div class="pc sel" onclick="vyberSluzbu(this,'vyrizeni',100)"><div class="pc-badge" id="pc1-badge">Doporučeno</div><div class="pc-radio"></div><div class="pc-eur">100 €</div><div class="pc-name" id="pc1-name">Kompletní vyřízení</div><div class="pc-info" id="pc1-info">Podání + komunikace s úřadem do úplného schválení.</div></div>
-            <div class="pc" onclick="vyberSluzbu(this,'podani',80)"><div class="pc-radio"></div><div class="pc-eur">80 €</div><div class="pc-name" id="pc2-name">Podání</div><div class="pc-info" id="pc2-info">Připravíme a odešleme žádost na Finanzamt.</div></div>
-            <div class="pc" onclick="vyberSluzbu(this,'steuernummer',120)"><div class="pc-radio"></div><div class="pc-eur">120 €</div><div class="pc-name" id="pc3-name">Komplet se Steuernummer</div><div class="pc-info" id="pc3-info">Podáme žádost o Steuernummer i Freistellung za vás.</div></div>
+            <div class="pc sel" onclick="vyberSluzbu(this,'prodlouzeni',60)"><div class="pc-radio"></div><div class="pc-eur">60 €</div><div class="pc-name" id="pc1-name">Prodloužení dokumentu</div><div class="pc-info" id="pc1-info">Prodloužení již vydaného Freistellung.</div></div>
+            <div class="pc" onclick="vyberSluzbu(this,'novy',80)"><div class="pc-radio"></div><div class="pc-eur">80 €</div><div class="pc-name" id="pc2-name">Žádost o nový dokument</div><div class="pc-info" id="pc2-info">Podání žádosti o nový Freistellung.</div></div>
           </div>
-          <div class="rozdil-info" id="rozdil-info"><strong>Kompletní vyřízení vs. Podání:</strong> Finanzamt může vyžadovat doplnění informací. Při kompletním vyřízení veškerou komunikaci řešíme za vás až do schválení.</div>
           <div class="pay-row">
             <button class="pay-btn primary" type="button" id="btn-card" onclick="zpracovatPlatbu()">💳 Zaplatit kartou</button>
             <button class="pay-btn secondary" type="button" id="btn-transfer" onclick="zobrazBankovniPrevod()">🏦 Bankovní převod</button>
@@ -478,7 +495,7 @@
           <div class="sidebar-box-title" id="sidebar-title">Co dostanete</div>
           <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf1-title">Podání do 24 hodin</div><div class="sidebar-feat-desc" id="sf1-desc">Okamžitě po přijetí platby</div></div></div>
           <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf2-title">Komunikace CZ/SK/PL/EN</div><div class="sidebar-feat-desc" id="sf2-desc">Žádná němčina ani angličtina</div></div></div>
-          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf3-title">Kompletní vyřízení</div><div class="sidebar-feat-desc" id="sf3-desc">Komunikujeme s úřadem za vás</div></div></div>
+          <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf3-title">Vyřízení žádosti</div><div class="sidebar-feat-desc" id="sf3-desc">Komunikujeme s úřadem za vás</div></div></div>
           <div class="sidebar-feat"><div class="sidebar-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="sidebar-feat-title" id="sf4-title">Dokument e-mailem</div><div class="sidebar-feat-desc" id="sf4-desc">Po schválení dostanete Freistellung</div></div></div>
         </div>
         <div class="sidebar-alert">
@@ -523,7 +540,7 @@
         <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq1-q-text">Co je Freistellungsbescheinigung?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq1-a">Je to osvědčení od německého finančního úřadu (Finanzamt), které potvrzuje, že váš odběratel nemusí srážet 15 % z vašich faktur dle §48b EStG.</div></div>
         <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq2-q-text">Kdo Freistellung potřebuje?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq2-a">Každý, kdo fakturuje za stavební nebo montážní práce v Německu jako OSVČ nebo firma. Týká se to české i slovenské OSVČ pracující pro německé zákazníky.</div></div>
         <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq3-q-text">Jak dlouho platí Freistellung?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq3-a">Závisí na rozhodnutí německého finančního úřadu (Finanzamt). Standardně se vydává na 1–3 roky.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq4-q-text">Potřebuji Steuernummer?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq4-a">Ano, německé daňové číslo (Steuernummer) je podmínkou pro vydání Freistellung. Pokud ho nemáte, nabízíme balíček včetně jeho vyřízení za 120 €.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span id="faq4-q-text">Potřebuji Steuernummer?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a" id="faq4-a">Ano, německé daňové číslo (Steuernummer) je podmínkou pro vydání Freistellung. Pokud ho nemáte, je potřeba jej vyřešit před podáním žádosti.</div></div>
       </div>
     </div>
   </div>
@@ -545,9 +562,9 @@
     <h2 id="modal-title">Obchodní podmínky</h2>
     <h3 id="modal-s1-t">1. Identifikace poskytovatele</h3><p id="modal-s1-b">Miroslav Jaroš &middot; IČO: 09814850 &middot; Neuměřice 144, 273 26<br>E-mail: mira.jaros7@seznam.cz &middot; Tel: +420 777 039 240</p>
     <h3 id="modal-s2-t">2. Předmět služby</h3><p id="modal-s2-b">Poskytovatel nabízí administrativní pomoc s přípravou a podáním žádosti o Freistellungsbescheinigung nach §48b EStG. Poskytovatel není daňovým poradcem ani právníkem.</p>
-    <h3 id="modal-s3-t">3. Rozsah služby</h3><ul id="modal-s3-list"><li>zpracování údajů dodaných klientem</li><li>příprava žádosti a odeslání na Finanzamt</li><li>u varianty „Kompletní vyřízení": komunikace s úřadem do schválení</li></ul>
+    <h3 id="modal-s3-t">3. Rozsah služby</h3><ul id="modal-s3-list"><li>zpracování údajů dodaných klientem</li><li>příprava žádosti a odeslání na Finanzamt</li><li></ul>
     <h3 id="modal-s4-t">4. Povinnosti klienta</h3><p id="modal-s4-b">Klient je povinen poskytnout pravdivé a úplné údaje. Za správnost zadaných informací nese odpovědnost klient.</p>
-    <h3 id="modal-s5-t">5. Ceny a platba</h3><ul id="modal-s5-list"><li>Kompletní vyřízení: 100 €</li><li>Podání: 80 €</li><li>Komplet se Steuernummer: 120 €</li></ul>
+    <h3 id="modal-s5-t">5. Ceny a platba</h3><ul id="modal-s5-list"><li>Prodloužení dokumentu: 60 €</li><li>Žádost o nový dokument: 80 €</li></ul>
     <h3 id="modal-s6-t">6. Reklamace</h3><p id="modal-s6-b">Stížnosti řešíme individuálně do 5 pracovních dnů.</p>
     <h3 id="modal-s7-t">7. Ochrana osobních údajů</h3><p id="modal-s7-b">Osobní údaje jsou zpracovávány výhradně za účelem poskytnutí služby a nejsou předávány třetím stranám, s výjimkou příslušného německého Finanzamtu.</p>
     <div class="modal-footer"><button id="modal-close-btn" onclick="document.getElementById('modal-podminky').classList.remove('open')">Zavřít</button></div>
@@ -583,13 +600,10 @@ const TRANSLATIONS = {
     sec_services_label: "Služby",
     sec_services_title: "Co pro vás podáme",
     sec_services_desc: "Podáme veškerou administrativu za vás — vy se soustředíte na práci.",
-    svc1_name: "Podání žádosti",
-    svc1_desc: "Připravíme a odešleme vaši žádost o Freistellung na příslušný Finanzamt. Rychlé, jednoduché a bez papírování z vaší strany.",
-    svc2_badge: "Nejoblíbenější",
-    svc2_name: "Kompletní vyřízení",
-    svc2_desc: "Připravíme a podáme žádost na Finanzamt. Veškerou komunikaci s úřadem řešíme za vás až do úplného schválení.",
-    svc3_name: "Komplet se Steuernummer",
-    svc3_desc: "Nemáte daňové číslo v Německu (Steuernummer)? Podáme žádost o jeho vydání jako součást balíčku.",
+    svc1_name: "Prodloužení dokumentu",
+    svc1_desc: "Máte již Freistellung a potřebujete jeho prodloužení? Připravíme a podáme žádost o prodloužení dokumentu.",
+    svc2_name: "Žádost o nový dokument",
+    svc2_desc: "Připravíme a odešleme žádost o nový Freistellung na příslušný Finanzamt.",
     sec_how_label: "Jak to funguje",
     sec_how_title: "Tři kroky k vaší Freistellung",
     sec_how_desc: "Celý proces zvládnete z telefonu za pár minut.",
@@ -636,15 +650,13 @@ const TRANSLATIONS = {
     uploads_desc: "Nahrajte dokumenty potřebné pro podání žádosti.",
     upload_zivnostak_label: "Živnostenský list",
     upload_smlouva_label: "Smlouva / objednávka",
+    upload_domicil_label: "Daňový domicil", upload_a1_label: "A1", upload_obcanka_label: "Občanský průkaz", upload_stary_label: "Starý Freistellung",
     upload_hint: "PDF, JPG nebo PNG, max. 10 MB",
     upload_choose: "Vybrat soubor",
     upload_none: "Žádný soubor nevybrán",
     pay_step: "Krok 2 — Vyberte typ služby a zaplaťte",
-    pc1_badge: "Doporučeno",
-    pc1_name: "Kompletní vyřízení", pc1_info: "Podání + komunikace s úřadem do úplného schválení.",
-    pc2_name: "Podání", pc2_info: "Připravíme a odešleme žádost na Finanzamt.",
-    pc3_name: "Komplet se Steuernummer", pc3_info: "Podáme žádost o Steuernummer i Freistellung za vás.",
-    rozdil: "<strong>Kompletní vyřízení vs. Podání:</strong> Finanzamt může vyžadovat doplnění informací. Při kompletním vyřízení veškerou komunikaci řešíme za vás až do schválení.",
+    pc1_name: "Prodloužení dokumentu", pc1_info: "Prodloužení již vydaného Freistellung.",
+    pc2_name: "Žádost o nový dokument", pc2_info: "Podání žádosti o nový Freistellung.",
     btn_card: "💳 Zaplatit kartou",
     btn_transfer: "🏦 Bankovní převod",
     bank_title: "Platba bankovním převodem",
@@ -653,7 +665,7 @@ const TRANSLATIONS = {
     sidebar_title: "Co dostanete",
     sf1_title: "Podání do 24 hodin", sf1_desc: "Okamžitě po přijetí platby",
     sf2_title: "Komunikace CZ/SK/PL/EN", sf2_desc: "Žádná němčina",
-    sf3_title: "Kompletní podání", sf3_desc: "Komunikujeme s úřadem za vás",
+    sf3_title: "Vyřízení žádosti", sf3_desc: "Komunikujeme s úřadem za vás",
     sf4_title: "Dokument e-mailem", sf4_desc: "Po schválení dostanete Freistellung",
     sidebar_alert_t: "⚠ Proč to řešit hned?",
     sidebar_alert_d: "Každá faktura bez Freistellung = 15&nbsp;% stržených. Při faktuře 10&nbsp;000&nbsp;€ přijdete o 1&nbsp;500&nbsp;€.",
@@ -675,7 +687,7 @@ const TRANSLATIONS = {
     faq3_q: "Jak dlouho platí Freistellung?",
     faq3_a: "Závisí na rozhodnutí německého finančního úřadu (Finanzamt). Standardně se vydává na 1–3 roky.",
     faq4_q: "Potřebuji Steuernummer?",
-    faq4_a: "Ano, německé daňové číslo (Steuernummer) je podmínkou pro vydání Freistellung. Pokud ho nemáte, nabízíme balíček včetně jeho vyřízení za 120 €.",
+    faq4_a: "Ano, německé daňové číslo (Steuernummer) je podmínkou pro vydání Freistellung. Pokud ho nemáte, je potřeba jej vyřešit před podáním žádosti.",
     footer_terms: "Obchodní podmínky",
     footer_contact: "Kontakt",
     modal_title: "Obchodní podmínky",
@@ -684,11 +696,11 @@ const TRANSLATIONS = {
     modal_s2_t: "2. Předmět služby",
     modal_s2_b: "Poskytovatel nabízí administrativní pomoc s přípravou a podáním žádosti o Freistellungsbescheinigung nach §48b EStG. Poskytovatel není daňovým poradcem ani právníkem.",
     modal_s3_t: "3. Rozsah služby",
-    modal_s3_b: ["zpracování údajů dodaných klientem","příprava žádosti a odeslání na Finanzamt","u varianty Kompletní vyřízení: komunikace s úřadem do schválení"],
+    modal_s3_b: ["zpracování údajů dodaných klientem","příprava žádosti a odeslání na Finanzamt"],
     modal_s4_t: "4. Povinnosti klienta",
     modal_s4_b: "Klient je povinen poskytnout pravdivé a úplné údaje. Za správnost zadaných informací nese odpovědnost klient.",
     modal_s5_t: "5. Ceny a platba",
-    modal_s5_b: ["Kompletní vyřízení: 100 €","Podání: 80 €","Komplet se Steuernummer: 120 €"],
+    modal_s5_b: ["Prodloužení dokumentu: 60 €","Žádost o nový dokument: 80 €"],
     modal_s6_t: "6. Reklamace",
     modal_s6_b: "Stížnosti řešíme individuálně do 5 pracovních dnů.",
     modal_s7_t: "7. Ochrana osobních údajů",
@@ -719,13 +731,10 @@ const TRANSLATIONS = {
     sec_services_label: "Services",
     sec_services_title: "What we submit for you",
     sec_services_desc: "We submit all the paperwork for you — you focus on the work.",
-    svc1_name: "Application submission",
-    svc1_desc: "We prepare and submit your Freistellung application to the relevant Finanzamt. Fast, simple and hassle-free.",
-    svc2_badge: "Most popular",
-    svc2_name: "Full processing",
-    svc2_desc: "We prepare and submit the application to the Finanzamt and handle all communication with the authority until full approval.",
-    svc3_name: "Full package with Steuernummer",
-    svc3_desc: "Don't have a German tax number (Steuernummer)? We'll submit the application as part of the package.",
+    svc1_name: "Document renewal",
+    svc1_desc: "Already have a Freistellung and need to renew it? We prepare and submit the renewal application.",
+    svc2_name: "New document application",
+    svc2_desc: "We prepare and submit an application for a new Freistellung to the relevant Finanzamt.",
     sec_how_label: "How it works",
     sec_how_title: "Three steps to your Freistellung",
     sec_how_desc: "The entire process can be done from your phone in a few minutes.",
@@ -772,15 +781,13 @@ const TRANSLATIONS = {
     uploads_desc: "Upload documents required for your application.",
     upload_zivnostak_label: "Trade licence / Business registration",
     upload_smlouva_label: "Contract / Order",
+    upload_domicil_label: "Tax residence certificate", upload_a1_label: "A1", upload_obcanka_label: "Identity card", upload_stary_label: "Previous Freistellung",
     upload_hint: "PDF, JPG or PNG, max. 10 MB",
     upload_choose: "Choose file",
     upload_none: "No file selected",
     pay_step: "Step 2 — Choose service and pay",
-    pc1_badge: "Recommended",
-    pc1_name: "Full processing", pc1_info: "Submission + authority communication until full approval.",
-    pc2_name: "Submission", pc2_info: "We prepare and submit the application to the Finanzamt.",
-    pc3_name: "Full package with Steuernummer", pc3_info: "We submit applications for both Steuernummer and Freistellung.",
-    rozdil: "<strong>Full processing vs. Submission:</strong> The Finanzamt may request additional information. With full processing we submit all communication on your behalf until approval.",
+    pc1_name: "Document renewal", pc1_info: "Renewal of an existing Freistellung.",
+    pc2_name: "New document application", pc2_info: "Application for a new Freistellung.",
     btn_card: "💳 Pay by card",
     btn_transfer: "🏦 Bank transfer",
     bank_title: "Bank transfer payment",
@@ -789,7 +796,7 @@ const TRANSLATIONS = {
     sidebar_title: "What you get",
     sf1_title: "Submission within 24 hours", sf1_desc: "Immediately after payment is received",
     sf2_title: "Communication in your language", sf2_desc: "No German or English required",
-    sf3_title: "Full processing", sf3_desc: "We communicate with the authority for you",
+    sf3_title: "Application handling", sf3_desc: "We communicate with the authority for you",
     sf4_title: "Document by email", sf4_desc: "You receive the Freistellung after approval",
     sidebar_alert_t: "⚠ Why act now?",
     sidebar_alert_d: "Every invoice without Freistellung = 15% deducted. On a €10,000 invoice you lose €1,500.",
@@ -811,7 +818,7 @@ const TRANSLATIONS = {
     faq3_q: "How long is the Freistellung valid?",
     faq3_a: "It depends on the decision of the German tax authority (Finanzamt). Validity is typically 1–3 years.",
     faq4_q: "Do I need a Steuernummer?",
-    faq4_a: "Yes, a German tax number (Steuernummer) is required to obtain a Freistellung. If you don't have one, we offer a package including its registration for €120.",
+    faq4_a: "Yes, a German tax number (Steuernummer) is required for a Freistellung. If you do not have one, it needs to be arranged before the application is submitted.",
     footer_terms: "Terms & Conditions",
     footer_contact: "Contact",
     modal_title: "Terms & Conditions",
@@ -820,11 +827,11 @@ const TRANSLATIONS = {
     modal_s2_t: "2. Service scope",
     modal_s2_b: "The provider offers administrative assistance with the preparation and submission of the Freistellungsbescheinigung application under §48b EStG. The provider is not a tax advisor or lawyer.",
     modal_s3_t: "3. Service scope",
-    modal_s3_b: ["processing of data provided by the client","preparation and submission of the application to the Finanzamt","for 'Full processing': communication with the authority until approval"],
+    modal_s3_b: ["processing of data provided by the client","preparation and submission of the application to the Finanzamt"],
     modal_s4_t: "4. Client obligations",
     modal_s4_b: "The client is required to provide accurate and complete information. The client is responsible for the accuracy of the submitted data.",
     modal_s5_t: "5. Prices and payment",
-    modal_s5_b: ["Full processing: €100","Submission: €80","Full package with Steuernummer: €120"],
+    modal_s5_b: ["Document renewal: €60","New document application: €80"],
     modal_s6_t: "6. Complaints",
     modal_s6_b: "Complaints are handled individually within 5 working days.",
     modal_s7_t: "7. Data protection",
@@ -855,13 +862,10 @@ const TRANSLATIONS = {
     sec_services_label: "Služby",
     sec_services_title: "Čo pre vás podáme",
     sec_services_desc: "Podáme všetku administratívu za vás — vy sa sústreďte na prácu.",
-    svc1_name: "Podanie žiadosti",
-    svc1_desc: "Pripravíme a odošleme vašu žiadosť o Freistellung na príslušný Finanzamt. Rýchlo, jednoducho a bez papierovačiek z vašej strany.",
-    svc2_badge: "Najobľúbenejšie",
-    svc2_name: "Kompletné vybavenie",
-    svc2_desc: "Pripravíme a podáme žiadosť na Finanzamt. Všetku komunikáciu s úradom riešime za vás až do úplného schválenia.",
-    svc3_name: "Komplet so Steuernummer",
-    svc3_desc: "Nemáte daňové číslo v Nemecku (Steuernummer)? Podáme žiadosť o jeho vydanie ako súčasť balíčka.",
+    svc1_name: "Predĺženie dokumentu",
+    svc1_desc: "Máte už Freistellung a potrebujete jeho predĺženie? Pripravíme a podáme žiadosť o predĺženie dokumentu.",
+    svc2_name: "Žiadosť o nový dokument",
+    svc2_desc: "Pripravíme a odošleme žiadosť o nový Freistellung na príslušný Finanzamt.",
     sec_how_label: "Ako to funguje",
     sec_how_title: "Tri kroky k vašej Freistellung",
     sec_how_desc: "Celý proces zvládnete z telefónu za pár minút.",
@@ -908,15 +912,13 @@ const TRANSLATIONS = {
     uploads_desc: "Nahrajte dokumenty potrebné pre podanie žiadosti.",
     upload_zivnostak_label: "Živnostenský list",
     upload_smlouva_label: "Zmluva / objednávka",
+    upload_domicil_label: "Daňový domicil", upload_a1_label: "A1", upload_obcanka_label: "Občiansky preukaz", upload_stary_label: "Starý Freistellung",
     upload_hint: "PDF, JPG alebo PNG, max. 10 MB",
     upload_choose: "Vybrať súbor",
     upload_none: "Žiadny súbor nevybraný",
     pay_step: "Krok 2 — Vyberte typ služby a zaplaťte",
-    pc1_badge: "Odporúčané",
-    pc1_name: "Kompletné vybavenie", pc1_info: "Podanie + komunikácia s úradom do úplného schválenia.",
-    pc2_name: "Podanie", pc2_info: "Pripravíme a odošleme žiadosť na Finanzamt.",
-    pc3_name: "Komplet so Steuernummer", pc3_info: "Podáme žiadosť o Steuernummer aj Freistellung za vás.",
-    rozdil: "<strong>Kompletné vybavenie vs. Podanie:</strong> Finanzamt môže vyžadovať doplnenie informácií. Pri kompletnom vybavení všetku komunikáciu riešime za vás až do schválenia.",
+    pc1_name: "Predĺženie dokumentu", pc1_info: "Predĺženie už vydaného Freistellung.",
+    pc2_name: "Žiadosť o nový dokument", pc2_info: "Podanie žiadosti o nový Freistellung.",
     btn_card: "💳 Zaplatiť kartou",
     btn_transfer: "🏦 Bankový prevod",
     bank_title: "Platba bankovým prevodom",
@@ -925,7 +927,7 @@ const TRANSLATIONS = {
     sidebar_title: "Čo dostanete",
     sf1_title: "Podanie do 24 hodín", sf1_desc: "Okamžite po prijatí platby",
     sf2_title: "Komunikácia CZ/SK/PL/EN", sf2_desc: "Žiadna nemčina",
-    sf3_title: "Kompletné vybavenie", sf3_desc: "Komunikujeme s úradom za vás",
+    sf3_title: "Vybavenie žiadosti", sf3_desc: "Komunikujeme s úradom za vás",
     sf4_title: "Dokument e-mailom", sf4_desc: "Po schválení dostanete Freistellung",
     sidebar_alert_t: "⚠ Prečo to riešiť hneď?",
     sidebar_alert_d: "Každá faktúra bez Freistellung = 15&nbsp;% strhnutých. Pri faktúre 10&nbsp;000&nbsp;€ prídete o 1&nbsp;500&nbsp;€.",
@@ -947,7 +949,7 @@ const TRANSLATIONS = {
     faq3_q: "Ako dlho platí Freistellung?",
     faq3_a: "Závisí od rozhodnutia nemeckého finančného úradu (Finanzamt). Štandardne sa vydáva na 1–3 roky.",
     faq4_q: "Potrebujem Steuernummer?",
-    faq4_a: "Áno, nemecké daňové číslo (Steuernummer) je podmienkou pre vydanie Freistellung. Ak ho nemáte, ponúkame balíček vrátane jeho vybavenia za 120 €.",
+    faq4_a: "Áno, nemecké daňové číslo (Steuernummer) je podmienkou pre vydanie Freistellung. Ak ho nemáte, je potrebné ho vybaviť pred podaním žiadosti.",
     footer_terms: "Obchodné podmienky",
     footer_contact: "Kontakt",
     modal_title: "Obchodné podmienky",
@@ -956,11 +958,11 @@ const TRANSLATIONS = {
     modal_s2_t: "2. Predmet služby",
     modal_s2_b: "Poskytovateľ ponúka administratívnu pomoc s prípravou a podaním žiadosti o Freistellungsbescheinigung nach §48b EStG. Poskytovateľ nie je daňovým poradcom ani právnikom.",
     modal_s3_t: "3. Rozsah služby",
-    modal_s3_b: ["spracovanie údajov dodaných klientom","príprava žiadosti a odoslanie na Finanzamt","u varianty Kompletné vybavenie: komunikácia s úradom do schválenia"],
+    modal_s3_b: ["spracovanie údajov dodaných klientom","príprava žiadosti a odoslanie na Finanzamt"],
     modal_s4_t: "4. Povinnosti klienta",
     modal_s4_b: "Klient je povinný poskytnúť pravdivé a úplné údaje. Za správnosť zadaných informácií nesie zodpovednosť klient.",
     modal_s5_t: "5. Ceny a platba",
-    modal_s5_b: ["Kompletné vybavenie: 100 €","Podanie: 80 €","Komplet so Steuernummer: 120 €"],
+    modal_s5_b: ["Predĺženie dokumentu: 60 €","Žiadosť o nový dokument: 80 €"],
     modal_s6_t: "6. Reklamácie",
     modal_s6_b: "Sťažnosti riešime individuálne do 5 pracovných dní.",
     modal_s7_t: "7. Ochrana osobných údajov",
@@ -991,13 +993,10 @@ const TRANSLATIONS = {
     sec_services_label: "Usługi",
     sec_services_title: "Co złożymy za Ciebie",
     sec_services_desc: "Złożymy całą dokumentację za Ciebie — Ty skupiasz się na pracy.",
-    svc1_name: "Złożenie wniosku",
-    svc1_desc: "Przygotujemy i wyślemy Twój wniosek o Freistellung do właściwego Finanzamt. Szybko, prosto i bez zbędnych formalności z Twojej strony.",
-    svc2_badge: "Najpopularniejsze",
-    svc2_name: "Kompleksowa obsługa",
-    svc2_desc: "Przygotujemy i złożymy wniosek w Finanzamt. Całą komunikację z urzędem prowadzimy za Ciebie aż do pełnego zatwierdzenia.",
-    svc3_name: "Komplet ze Steuernummer",
-    svc3_desc: "Nie masz numeru podatkowego w Niemczech (Steuernummer)? Złożymy wniosek o jego wydanie jako część pakietu.",
+    svc1_name: "Przedłużenie dokumentu",
+    svc1_desc: "Masz już Freistellung i potrzebujesz jego przedłużenia? Przygotujemy i złożymy wniosek o przedłużenie dokumentu.",
+    svc2_name: "Wniosek o nowy dokument",
+    svc2_desc: "Przygotujemy i wyślemy wniosek o nowy Freistellung do właściwego Finanzamt.",
     sec_how_label: "Jak to działa",
     sec_how_title: "Trzy kroki do Twojego Freistellung",
     sec_how_desc: "Cały proces możesz załatwić z telefonu w kilka minut.",
@@ -1044,15 +1043,13 @@ const TRANSLATIONS = {
     uploads_desc: "Prześlij dokumenty potrzebne do złożenia wniosku.",
     upload_zivnostak_label: "Zaświadczenie o działalności",
     upload_smlouva_label: "Umowa / zamówienie",
+    upload_domicil_label: "Certyfikat rezydencji podatkowej", upload_a1_label: "A1", upload_obcanka_label: "Dowód osobisty", upload_stary_label: "Poprzedni Freistellung",
     upload_hint: "PDF, JPG lub PNG, maks. 10 MB",
     upload_choose: "Wybierz plik",
     upload_none: "Nie wybrano pliku",
     pay_step: "Krok 2 — Wybierz usługę i zapłać",
-    pc1_badge: "Polecane",
-    pc1_name: "Kompleksowa obsługa", pc1_info: "Złożenie + komunikacja z urzędem do pełnego zatwierdzenia.",
-    pc2_name: "Złożenie wniosku", pc2_info: "Przygotujemy i wyślemy wniosek do Finanzamt.",
-    pc3_name: "Komplet ze Steuernummer", pc3_info: "Złożymy wniosek o Steuernummer i Freistellung za Ciebie.",
-    rozdil: "<strong>Kompleksowa obsługa vs. Złożenie:</strong> Finanzamt może wymagać uzupełnienia informacji. Przy kompleksowej obsłudze całą komunikację prowadzimy za Ciebie aż do zatwierdzenia.",
+    pc1_name: "Przedłużenie dokumentu", pc1_info: "Przedłużenie już wydanego Freistellung.",
+    pc2_name: "Wniosek o nowy dokument", pc2_info: "Złożenie wniosku o nowy Freistellung.",
     btn_card: "💳 Zapłać kartą",
     btn_transfer: "🏦 Przelew bankowy",
     bank_title: "Płatność przelewem bankowym",
@@ -1061,7 +1058,7 @@ const TRANSLATIONS = {
     sidebar_title: "Co otrzymujesz",
     sf1_title: "Złożenie w 24 godziny", sf1_desc: "Natychmiast po otrzymaniu płatności",
     sf2_title: "Komunikacja CZ/SK/PL/EN", sf2_desc: "Bez języka niemieckiego",
-    sf3_title: "Kompleksowa obsługa", sf3_desc: "Komunikujemy się z urzędem za Ciebie",
+    sf3_title: "Obsługa wniosku", sf3_desc: "Komunikujemy się z urzędem za Ciebie",
     sf4_title: "Dokument e-mailem", sf4_desc: "Po zatwierdzeniu otrzymujesz Freistellung",
     sidebar_alert_t: "⚠ Dlaczego działać teraz?",
     sidebar_alert_d: "Każda faktura bez Freistellung = 15&nbsp;% potrącenia. Na fakturze 10&nbsp;000&nbsp;€ tracisz 1&nbsp;500&nbsp;€.",
@@ -1083,7 +1080,7 @@ const TRANSLATIONS = {
     faq3_q: "Jak długo obowiązuje Freistellung?",
     faq3_a: "Zależy od decyzji niemieckiego urzędu skarbowego (Finanzamt). Standardowo wydawane jest na 1–3 lata.",
     faq4_q: "Czy potrzebuję Steuernummer?",
-    faq4_a: "Tak, niemiecki numer podatkowy (Steuernummer) jest warunkiem wydania Freistellung. Jeśli go nie masz, oferujemy pakiet z jego uzyskaniem za 120 €.",
+    faq4_a: "Tak, niemiecki numer podatkowy (Steuernummer) jest warunkiem wydania Freistellung. Jeśli go nie masz, trzeba go uzyskać przed złożeniem wniosku.",
     footer_terms: "Warunki handlowe",
     footer_contact: "Kontakt",
     modal_title: "Warunki handlowe",
@@ -1092,11 +1089,11 @@ const TRANSLATIONS = {
     modal_s2_t: "2. Przedmiot usługi",
     modal_s2_b: "Dostawca oferuje pomoc administracyjną w przygotowaniu i złożeniu wniosku o Freistellungsbescheinigung nach §48b EStG. Dostawca nie jest doradcą podatkowym ani prawnikiem.",
     modal_s3_t: "3. Zakres usługi",
-    modal_s3_b: ["przetwarzanie danych dostarczonych przez klienta","przygotowanie i przesłanie wniosku do Finanzamt","w wariancie Kompleksowa obsługa: komunikacja z urzędem do zatwierdzenia"],
+    modal_s3_b: ["przetwarzanie danych dostarczonych przez klienta","przygotowanie i przesłanie wniosku do Finanzamt"],
     modal_s4_t: "4. Obowiązki klienta",
     modal_s4_b: "Klient jest zobowiązany do podania prawdziwych i kompletnych danych. Za prawidłowość wprowadzonych informacji odpowiada klient.",
     modal_s5_t: "5. Ceny i płatność",
-    modal_s5_b: ["Kompleksowa obsługa: 100 €","Złożenie wniosku: 80 €","Komplet ze Steuernummer: 120 €"],
+    modal_s5_b: ["Przedłużenie dokumentu: 60 €","Wniosek o nowy dokument: 80 €"],
     modal_s6_t: "6. Reklamacje",
     modal_s6_b: "Skargi rozpatrujemy indywidualnie w ciągu 5 dni roboczych.",
     modal_s7_t: "7. Ochrona danych osobowych",
@@ -1154,11 +1151,8 @@ function applyTranslations(lang) {
   setText('sec-services-desc', t('sec_services_desc'));
   setText('svc1-name', t('svc1_name'));
   setText('svc1-desc', t('svc1_desc'));
-  setText('svc2-badge', t('svc2_badge'));
   setText('svc2-name', t('svc2_name'));
   setText('svc2-desc', t('svc2_desc'));
-  setText('svc3-name', t('svc3_name'));
-  setText('svc3-desc', t('svc3_desc'));
 
   // How it works
   setText('sec-how-label', t('sec_how_label'));
@@ -1207,25 +1201,23 @@ function applyTranslations(lang) {
   setText('uploads-desc', t('uploads_desc'));
   setText('upload-zivnostak-label', t('upload_zivnostak_label'));
   setText('upload-smlouva-label', t('upload_smlouva_label'));
-  setText('upload-hint-1', t('upload_hint'));
-  setText('upload-hint-2', t('upload_hint'));
-  const zBtn = document.getElementById('upload-zivnostak-btn');
-  const sBtn = document.getElementById('upload-smlouva-btn');
-  const zInput = document.getElementById('input-zivnostak');
-  const sInput = document.getElementById('input-smlouva');
-  if(zBtn && zInput && !zInput.files.length) zBtn.textContent = t('upload_choose');
-  if(sBtn && sInput && !sInput.files.length) sBtn.textContent = t('upload_choose');
+  setText('upload-domicil-label', t('upload_domicil_label'));
+  setText('upload-a1-label', t('upload_a1_label'));
+  setText('upload-obcanka-label', t('upload_obcanka_label'));
+  setText('upload-stary-label', t('upload_stary_label'));
+  for(let i=1;i<=6;i++) setText('upload-hint-'+i, t('upload_hint'));
+  const uploadInputs=[['upload-zivnostak-btn','input-zivnostak'],['upload-smlouva-btn','input-smlouva'],['upload-domicil-btn','input-domicil'],['upload-a1-btn','input-a1'],['upload-obcanka-btn','input-obcanka'],['upload-stary-btn','input-stary']];
+  uploadInputs.forEach(([btnId,inputId])=>{
+    const btn=document.getElementById(btnId), input=document.getElementById(inputId);
+    if(btn && input && !input.files.length) btn.textContent=t('upload_choose');
+  });
 
   // Payment
   setText('pay-step', t('pay_step'));
-  setText('pc1-badge', t('pc1_badge'));
   setText('pc1-name', t('pc1_name'));
   setText('pc1-info', t('pc1_info'));
   setText('pc2-name', t('pc2_name'));
   setText('pc2-info', t('pc2_info'));
-  setText('pc3-name', t('pc3_name'));
-  setText('pc3-info', t('pc3_info'));
-  setHTML('rozdil-info', t('rozdil'));
   setText('btn-card', t('btn_card'));
   setText('btn-transfer', t('btn_transfer'));
   setText('bank-title', t('bank_title'));
@@ -1322,7 +1314,7 @@ function setLabel(fieldId, labelText, placeholder, errText) {
 function openMobileMenu(){document.getElementById('mobileMenu').classList.add('open')}
 function closeMobileMenu(){document.getElementById('mobileMenu').classList.remove('open')}
 function toggleFaq(el){el.closest('.faq-item').classList.toggle('open')}
-let vybranaSluzba='vyrizeni',vybranaCena=100,pocetZakazek=1,formularOdeslan=false;
+let vybranaSluzba='prodlouzeni',vybranaCena=60,pocetZakazek=1,formularOdeslan=false;
 const povinna=[
   {id:'jmeno',fg:'fg-jmeno',check:v=>v.trim().split(/\s+/).length>=2},
   {id:'narozeni',fg:'fg-narozeni',check:v=>/^\d{1,2}\.\d{1,2}\.\d{4}$/.test(v.trim())},
@@ -1380,7 +1372,7 @@ function sebratData(){
     const f=b.querySelector('.zak-firma')?.value||'',a=b.querySelector('.zak-adresa')?.value||'',m=b.querySelector('.zak-misto')?.value||'',d=b.querySelector('.zak-doba')?.value||'';
     if(f||a)zakazky.push(`Firma: ${f} | Adresa: ${a} | Misto: ${m||'-'} | Doba: ${d||'-'}`);
   });
-  const nazev=vybranaSluzba==='vyrizeni'?'Kompletni vyrizeni (100 EUR)':vybranaSluzba==='podani'?'Podani (80 EUR)':'Komplet se Steuernummer (120 EUR)';
+  const nazev=vybranaSluzba==='prodlouzeni'?'Prodlouzeni dokumentu (60 EUR)':'Zadost o novy dokument (80 EUR)';
   return{'VYBRANA SLUZBA':nazev,'Jazyk':currentLang,'Jmeno':document.getElementById('jmeno').value,'Narozeni':document.getElementById('narozeni').value,'Statni':document.getElementById('statni').value,'Telefon':document.getElementById('telefon').value,'Email':document.getElementById('email').value,'Ulice':document.getElementById('ulice').value,'Mesto':document.getElementById('mesto').value,'PSC':document.getElementById('psc').value,'Stat':document.getElementById('stat').value,'Firma':document.getElementById('firma').value,'Typ podnikani':document.getElementById('typ-podnikani').value,'Obor':document.getElementById('obor').value,'DIC':document.getElementById('dic').value||'-','Steuernummer':document.getElementById('steuernummer').value||'-','Ma Freistellung':document.getElementById('ma-freistellung').value,'Pracuje v DE od':document.getElementById('od-kdy').value,'Delka prace':document.getElementById('jak-dlouho').value,'Misto prace':document.getElementById('kde-pracuje').value,'Zakazky':zakazky.join('\n')||'-'};
 }
 async function odeslatNaServer(){
@@ -1388,10 +1380,19 @@ async function odeslatNaServer(){
   const data=sebratData();
   const fd=new FormData();
   Object.entries(data).forEach(([k,v])=>fd.append(k,v));
+  fd.append('CENA', String(vybranaCena));
   const z=document.getElementById('input-zivnostak')?.files[0];
   const sm=document.getElementById('input-smlouva')?.files[0];
+  const dom=document.getElementById('input-domicil')?.files[0];
+  const a1=document.getElementById('input-a1')?.files[0];
+  const op=document.getElementById('input-obcanka')?.files[0];
+  const st=document.getElementById('input-stary')?.files[0];
   if(z) fd.append('priloha_zivnostensky_list', z, z.name);
   if(sm) fd.append('priloha_smlouva_objednavka', sm, sm.name);
+  if(dom) fd.append('priloha_danovy_domicil', dom, dom.name);
+  if(a1) fd.append('priloha_a1', a1, a1.name);
+  if(op) fd.append('priloha_obcansky_prukaz', op, op.name);
+  if(st) fd.append('priloha_stary_freistellung', st, st.name);
   try {
     const res=await fetch('/submit', {method:'POST', body:fd});
     if(res.ok){ formularOdeslan=true; return true; }
@@ -1408,8 +1409,16 @@ function zpracovatPlatbu(){
   fd.append('CENA', String(vybranaCena));
   const z=document.getElementById('input-zivnostak')?.files[0];
   const sm=document.getElementById('input-smlouva')?.files[0];
+  const dom=document.getElementById('input-domicil')?.files[0];
+  const a1=document.getElementById('input-a1')?.files[0];
+  const op=document.getElementById('input-obcanka')?.files[0];
+  const st=document.getElementById('input-stary')?.files[0];
   if(z) fd.append('priloha_zivnostensky_list', z, z.name);
   if(sm) fd.append('priloha_smlouva_objednavka', sm, sm.name);
+  if(dom) fd.append('priloha_danovy_domicil', dom, dom.name);
+  if(a1) fd.append('priloha_a1', a1, a1.name);
+  if(op) fd.append('priloha_obcansky_prukaz', op, op.name);
+  if(st) fd.append('priloha_stary_freistellung', st, st.name);
   fetch('/submit',{method:'POST',body:fd})
     .then(r=>r.json())
     .then(json=>{

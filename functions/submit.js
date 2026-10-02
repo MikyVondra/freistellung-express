@@ -23,29 +23,32 @@ export async function onRequestPost(context) {
   const cena        = parseInt(fields['CENA'] || '0', 10);
   const lang        = fields['Jazyk'] || 'cs';
 
-  const serviceMap  = { 80: 'Podání žádosti', 100: 'Kompletní vyřízení', 120: 'Komplet se Steuernummer' };
+  const serviceMap  = { 60: 'Prodloužení dokumentu', 80: 'Žádost o nový dokument' };
+  if (![60, 80].includes(cena)) {
+    return new Response(JSON.stringify({ ok: false, error: 'Neplatná cena služby.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+    });
+  }
+
   const serviceName = serviceMap[cena] || 'Freistellung Express';
 
   const svcDescMap = {
     cs: {
-      80:  'Příprava a podání žádosti o Freistellung na německý Finanzamt.',
-      100: 'Podání žádosti + veškerá komunikace s úřadem až do schválení.',
-      120: 'Podání žádosti o Steuernummer i Freistellung – vše za vás.',
+      60:  'Příprava a podání žádosti o prodloužení stávajícího Freistellung.',
+      80:  'Příprava a podání žádosti o nový Freistellung na německý Finanzamt.',
     },
     sk: {
-      80:  'Príprava a podanie žiadosti o Freistellung na nemecký Finanzamt.',
-      100: 'Podanie žiadosti + všetka komunikácia s úradom až do schválenia.',
-      120: 'Podanie žiadosti o Steuernummer aj Freistellung – všetko za vás.',
+      60:  'Príprava a podanie žiadosti o predĺženie existujúceho Freistellung.',
+      80:  'Príprava a podanie žiadosti o nový Freistellung na nemecký Finanzamt.',
     },
     pl: {
-      80:  'Przygotowanie i złożenie wniosku o Freistellung do niemieckiego Finanzamt.',
-      100: 'Złożenie wniosku + pełna komunikacja z urzędem do zatwierdzenia.',
-      120: 'Złożenie wniosku o Steuernummer i Freistellung – wszystko za Ciebie.',
+      60:  'Przygotowanie i złożenie wniosku o przedłużenie obecnego Freistellung.',
+      80:  'Przygotowanie i złożenie wniosku o nowy Freistellung do niemieckiego Finanzamt.',
     },
     en: {
-      80:  'Preparation and submission of Freistellung application to the German Finanzamt.',
-      100: 'Application + full communication with the authority until approved.',
-      120: 'Steuernummer and Freistellung application – everything handled for you.',
+      60:  'Preparation and submission of an application to extend an existing Freistellung.',
+      80:  'Preparation and submission of a new Freistellung application to the German Finanzamt.',
     },
   };
   const serviceDesc = (svcDescMap[lang] || svcDescMap.cs)[cena] || '';
@@ -82,6 +85,8 @@ export async function onRequestPost(context) {
     const safeKey = key.replace(/\s+/g, '_').slice(0, 40);
     metaParams[`metadata[${safeKey}]`] = String(value).slice(0, 490);
   }
+
+  metaParams['metadata[VYBRANA_SLUZBA]'] = `${serviceName} (${cena} EUR)`;
 
   const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',

@@ -41,7 +41,7 @@ function buildOwnerEmail(session) {
       <p style="color:#6b7280;margin-bottom:16px">Platba potvrzena Stripe. Zakaznik obdrzel potvrzovaci email.</p>
       <table style="border-collapse:collapse;width:100%;max-width:600px">${ordered}${extra}</table>
       <p style="margin-top:16px;color:#6b7280;font-size:13px">
-        Prilohy (zivnostensky list, smlouva) zakaznik nahral pri vyplnovani formulate.
+        Prilohy zakaznik nahral pri vyplnovani formulare.
         Pokud je potrebujes, kontaktuj zakaznika na emailu vyse.
       </p>`,
   };
@@ -54,7 +54,7 @@ const CUSTOMER_TRANSLATIONS = {
     greeting: (name) => `Dobrý den, <strong style="color:#111827">${name}</strong>.`,
     intro: 'Vaše objednávka byla úspěšně zaplacena. Nyní se pustíme do práce.',
     svcLabel: 'Objednaná služba',
-    svcDesc: { 'Podani': 'Připravíme a odešleme žádost o Freistellung na Finanzamt.', 'Kompletni vyrizeni': 'Podání žádosti + komunikace s úřadem až do schválení.', 'Komplet se Steuernummer': 'Podáme žádost o Steuernummer i Freistellung za vás.' },
+    svcDesc: { 'Prodloužení dokumentu': 'Připravíme a podáme žádost o prodloužení vašeho Freistellung.', 'Žádost o nový dokument': 'Připravíme a podáme žádost o nový Freistellung na Finanzamt.' },
     nextLabel: 'Co se děje dál?',
     step1t: 'Zkontrolujeme vaše podklady', step1d: 'Do 24 hodin vás případně kontaktujeme, pokud budeme potřebovat doplnit informace.',
     step2t: 'Podáme žádost na Finanzamt', step2d: 'Vše vyřídíme elektronicky přímo s německým finančním úřadem.',
@@ -69,7 +69,7 @@ const CUSTOMER_TRANSLATIONS = {
     greeting: (name) => `Dobrý deň, <strong style="color:#111827">${name}</strong>.`,
     intro: 'Vaša objednávka bola úspešne zaplatená. Teraz sa pustíme do práce.',
     svcLabel: 'Objednaná služba',
-    svcDesc: { 'Podani': 'Pripravíme a odošleme žiadosť o Freistellung na Finanzamt.', 'Kompletni vyrizeni': 'Podanie žiadosti + komunikácia s úradom až do schválenia.', 'Komplet se Steuernummer': 'Podáme žiadosť o Steuernummer aj Freistellung za vás.' },
+    svcDesc: { 'Prodloužení dokumentu': 'Pripravíme a podáme žiadosť o predĺženie vášho Freistellung.', 'Žádost o nový dokument': 'Pripravíme a podáme žiadosť o nový Freistellung na Finanzamt.' },
     nextLabel: 'Čo sa deje ďalej?',
     step1t: 'Skontrolujeme vaše podklady', step1d: 'Do 24 hodín vás prípadne kontaktujeme, ak budeme potrebovať doplniť informácie.',
     step2t: 'Podáme žiadosť na Finanzamt', step2d: 'Všetko vybavíme elektronicky priamo s nemeckým finančným úradom.',
@@ -84,7 +84,7 @@ const CUSTOMER_TRANSLATIONS = {
     greeting: (name) => `Dzień dobry, <strong style="color:#111827">${name}</strong>.`,
     intro: 'Twoje zamówienie zostało pomyślnie opłacone. Teraz zabieramy się do pracy.',
     svcLabel: 'Zamówiona usługa',
-    svcDesc: { 'Podani': 'Przygotujemy i złożymy wniosek o Freistellung do Finanzamt.', 'Kompletni vyrizeni': 'Złożenie wniosku + pełna komunikacja z urzędem do zatwierdzenia.', 'Komplet se Steuernummer': 'Złożymy wniosek o Steuernummer i Freistellung za Ciebie.' },
+    svcDesc: { 'Prodloužení dokumentu': 'Przygotujemy i złożymy wniosek o przedłużenie Twojego Freistellung.', 'Žádost o nový dokument': 'Przygotujemy i złożymy wniosek o nowy Freistellung do Finanzamt.' },
     nextLabel: 'Co dalej?',
     step1t: 'Sprawdzimy Twoje dokumenty', step1d: 'W ciągu 24 godzin skontaktujemy się z Tobą, jeśli będziemy potrzebować dodatkowych informacji.',
     step2t: 'Złożymy wniosek do Finanzamt', step2d: 'Wszystko załatwimy elektronicznie bezpośrednio z niemieckim urzędem skarbowym.',
@@ -99,7 +99,7 @@ const CUSTOMER_TRANSLATIONS = {
     greeting: (name) => `Dear <strong style="color:#111827">${name}</strong>,`,
     intro: 'Your order has been successfully paid. We are now getting to work.',
     svcLabel: 'Ordered service',
-    svcDesc: { 'Podani': 'We will prepare and submit the Freistellung application to the Finanzamt.', 'Kompletni vyrizeni': 'Application submission + full communication with the authority until approved.', 'Komplet se Steuernummer': 'We will submit the Steuernummer and Freistellung application for you.' },
+    svcDesc: { 'Prodloužení dokumentu': 'We will prepare and submit an application to renew your Freistellung.', 'Žádost o nový dokument': 'We will prepare and submit a new Freistellung application to the Finanzamt.' },
     nextLabel: 'What happens next?',
     step1t: 'We will review your documents', step1d: 'Within 24 hours we will contact you if we need any additional information.',
     step2t: 'We will submit the application to the Finanzamt', step2d: 'Everything is handled electronically directly with the German tax authority.',
