@@ -94,9 +94,10 @@
     .hiw-num{width:40px;height:40px;background:var(--blue-bg);border:1.5px solid var(--blue-br);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--blue);margin-bottom:18px}
     .hiw-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px}
     .hiw-desc{font-size:13.5px;color:var(--muted);line-height:1.75}
-    .about-grid{display:grid;grid-template-columns:200px 1fr;gap:52px;align-items:start}
-    .about-photo{width:200px;height:270px;overflow:hidden;position:relative}
-    .about-photo img{position:absolute;top:20px;left:0;width:100%}
+    .about-grid{display:grid;grid-template-columns:220px 1fr;gap:52px;align-items:center}
+    .about-photo{width:220px;height:280px;overflow:hidden;position:relative;border-radius:16px;background:var(--blue);box-shadow:0 18px 45px rgba(27,58,107,.16);isolation:isolate}
+    .about-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;filter:grayscale(1) contrast(1.12) brightness(.95);mix-blend-mode:screen;opacity:.82}
+    .about-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(27,58,107,.02),rgba(27,58,107,.24));mix-blend-mode:multiply;pointer-events:none}
     .about-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--subtle);font-size:11px;letter-spacing:1px;text-transform:uppercase}
     .about-placeholder svg{width:36px;height:36px}
     .about-txt{font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:14px}
@@ -671,7 +672,7 @@ const TRANSLATIONS = {
     sidebar_alert_d: "Každá faktura bez Freistellung = 15&nbsp;% stržených. Při faktuře 10&nbsp;000&nbsp;€ přijdete o 1&nbsp;500&nbsp;€.",
     about_label: "O nás",
     about_title: "Člověk, který ví, jak na to",
-    about_p1: "Sám pracuji v Německu a vím, jak složité může být řešit úřady, papíry a cizí jazyk. Když jsem poprvé řešil Freistellung, platil jsem více a čekal 4 měsíce. Proto jsem vytvořil tuto službu, která pomáhá lidem jako jsem já — pracujícím v Německu, kteří chtějí mít vše vyřešené jednoduše a bez stresu.",
+    about_p1: "Sám pracuji v Německu a vím, jak složité může být řešit úřady, papíry a cizí jazyk. Když jsem poprvé řešil Freistellung, platil jsem více a čekal 4 měsíce. Proto jsem vytvořil tuto službu, která pomáhá lidem jako jsem já - pracujícím v Německu, kteří chtějí mít vše vyřešené jednoduše a bez stresu.",
     about_p2: "Pomáhám s administrativním podáním žádosti o Freistellung a dalšími potřebnými kroky, aby ses mohl soustředit na práci, ne na papírování. Komunikace je rychlá, lidská a bez zbytečných složitostí.",
     about_role: "Zakladatel · Freistellung Express · IČO 09814850",
     contact_label: "Kontakt",
@@ -802,7 +803,7 @@ const TRANSLATIONS = {
     sidebar_alert_d: "Every invoice without Freistellung = 15% deducted. On a €10,000 invoice you lose €1,500.",
     about_label: "About",
     about_title: "Someone who knows how it works",
-    about_p1: "I work in Germany myself and know how difficult it can be to deal with authorities, paperwork and a foreign language. When I first dealt with the Freistellung, I paid more and waited 4 months. That's why I created this service to help people like me — working in Germany who want everything handled simply and without stress.",
+    about_p1: "I work in Germany myself and know how difficult it can be to deal with authorities, paperwork and a foreign language. When I first dealt with the Freistellung, I paid more and waited 4 months. That's why I created this service to help people like me - working in Germany who want everything handled simply and without stress.",
     about_p2: "I help with the administrative submission of the Freistellung application and other necessary steps, so you can focus on work, not paperwork. Communication is fast, human and without unnecessary complications.",
     about_role: "Founder · Freistellung Express · CRN 09814850",
     contact_label: "Contact",
@@ -933,7 +934,7 @@ const TRANSLATIONS = {
     sidebar_alert_d: "Každá faktúra bez Freistellung = 15&nbsp;% strhnutých. Pri faktúre 10&nbsp;000&nbsp;€ prídete o 1&nbsp;500&nbsp;€.",
     about_label: "O nás",
     about_title: "Človek, ktorý vie, ako na to",
-    about_p1: "Sám pracujem v Nemecku a viem, aké zložité môže byť riešiť úrady, papiere a cudzí jazyk. Keď som prvýkrát riešil Freistellung, platil som viac a čakal 4 mesiace. Preto som vytvoril túto službu, ktorá pomáha ľuďom ako som ja — pracujúcim v Nemecku, ktorí chcú mať všetko vyriešené jednoducho a bez stresu.",
+    about_p1: "Sám pracujem v Nemecku a viem, aké zložité môže byť riešiť úrady, papiere a cudzí jazyk. Keď som prvýkrát riešil Freistellung, platil som viac a čakal 4 mesiace. Preto som vytvoril túto službu, ktorá pomáha ľuďom ako som ja - pracujúcim v Nemecku, ktorí chcú mať všetko vyriešené jednoducho a bez stresu.",
     about_p2: "Pomáham s administratívnym podaním žiadosti o Freistellung a ďalšími potrebnými krokmi, aby si sa mohol sústrediť na prácu, nie na papierovanie. Komunikácia je rýchla, ľudská a bez zbytočných komplikácií.",
     about_role: "Zakladateľ · Freistellung Express · IČO 09814850",
     contact_label: "Kontakt",
@@ -1064,7 +1065,7 @@ const TRANSLATIONS = {
     sidebar_alert_d: "Każda faktura bez Freistellung = 15&nbsp;% potrącenia. Na fakturze 10&nbsp;000&nbsp;€ tracisz 1&nbsp;500&nbsp;€.",
     about_label: "O nas",
     about_title: "Ktoś, kto wie jak to zrobić",
-    about_p1: "Sam pracuję w Niemczech i wiem, jak trudne może być radzenie sobie z urzędami, papierami i obcym językiem. Gdy po raz pierwszy zajmowałem się Freistellung, płaciłem więcej i czekałem 4 miesiące. Dlatego stworzyłem tę usługę, która pomaga ludziom takim jak ja — pracującym w Niemczech, którzy chcą mieć wszystko załatwione prosto i bez stresu.",
+    about_p1: "Sam pracuję w Niemczech i wiem, jak trudne może być radzenie sobie z urzędami, papierami i obcym językiem. Gdy po raz pierwszy zajmowałem się Freistellung, płaciłem więcej i czekałem 4 miesiące. Dlatego stworzyłem tę usługę, która pomaga ludziom takim jak ja - pracującym w Niemczech, którzy chcą mieć wszystko załatwione prosto i bez stresu.",
     about_p2: "Pomagam w administracyjnym złożeniu wniosku o Freistellung i innych niezbędnych krokach, abyś mógł skupić się na pracy, nie na papierkologii. Komunikacja jest szybka, ludzka i bez zbędnych komplikacji.",
     about_role: "Założyciel · Freistellung Express · NIP 09814850",
     contact_label: "Kontakt",
